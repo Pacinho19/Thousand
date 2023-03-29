@@ -1,32 +1,29 @@
 package pl.pacinho.thousand.model.entity;
 
 import lombok.Getter;
+import lombok.Setter;
+import pl.pacinho.thousand.model.dto.CardDto;
+
+import java.util.Collections;
+import java.util.List;
 
 @Getter
 public class Player {
     private final String name;
     private int index;
-    private int completedRounds;
+    @Setter
+    private List<CardDto> cards;
     private int points;
-    private long summaryTime;
 
     public Player(String name, int index) {
         this.name = name;
         this.index = index;
-        this.completedRounds = 0;
         this.points = 0;
-        this.summaryTime = 0L;
-    }
-
-    public void incrementCompletedRounds() {
-        this.completedRounds++;
+        this.cards = Collections.emptyList();
     }
 
     public void addPoints(int points) {
         this.points += points;
     }
 
-    public void incrementSummaryTime(long time) {
-        summaryTime += time;
-    }
 }

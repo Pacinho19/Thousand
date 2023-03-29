@@ -44,7 +44,10 @@ public class GameService {
 
     public boolean checkStartGame(String gameId) {
         Game game = gameLogicService.findById(gameId);
-        return game.getPlayers().size() == game.getPlayersCount();
+        boolean startGame = game.getPlayers().size() == game.getPlayersCount();
+
+        if (startGame) gameLogicService.dealTheCards(game);
+        return startGame;
     }
 
     public boolean canJoin(GameDto game, String name) {
