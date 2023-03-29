@@ -1,0 +1,17 @@
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light bg-light" xmlns:th="http://www.w3.org/1999/xhtml"
+     xmlns:sec="http://www.w3.org/1999/xhtml">
+    <a class="navbar-brand bi bi-home" href="/thousand">Home</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+        </ul>
+
+        <div sec:authorize="isAuthenticated()">
+            <a class="nav-link bi bi-power" href="/logout"></a>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="availableGamesFrag">
+    <div id="availableGames">
+
+        <table class="table table-striped">
+            <thead>
+            <tr class="table-light">
+                <th scope="col">#</th>
+                <th scope="col">ID</th>
+                <th scope="col">Start Time</th>
+                <th scope="col">JOIN</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="table-light" th:each="game, iterStat : ${games}">
+                <td><span th:text="${iterStat.count}"> </span></td>
+                <td><span th:text="${game.id}"> </span></td>
+                <td><span th:text="${game.startTime}"> </span></td>
+                <td th:if="${game.status.name=='NEW'}">
+                    <form th:action="@{'/thousand/games/' + ${game.id} + '/room'}" th:method="get">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-plus"></i></button>
+                    </form>
+                </td>
+                <td th:if="${game.status.name=='IN_PROGRESS'}">
+                    <form th:action="@{'/thousand/games/' + ${game.id} + '/room'}" th:method="get">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-eye"></i></button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+</body>
+</html>

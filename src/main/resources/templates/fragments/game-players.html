@@ -1,0 +1,16 @@
+<div th:fragment="gamePlayersFrag">
+  <div id="players">
+
+    <table class="center">
+      <tr th:each="i : ${#numbers.sequence(1,game.playersCount)}">
+        <td th:if="${i<=game.players.size}">
+          <span th:text="${i + '. ' + game.players[i-1]}"></span>
+        </td>
+        <td th:if="${i>game.players.size}">
+          <span th:text="${i + '. WAITING'}"></span>
+        </td>
+      <tr>
+    </table>
+
+  </div>
+</div>

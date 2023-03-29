@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>thousand game room</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+
+    <script type="text/javascript" th:src="@{/js/game-room.js}"></script>
+    <script type="text/javascript" th:src="@{/js/core.js}"></script>
+
+    <style>
+        .center {
+          margin-left: auto;
+          margin-right: auto;
+        }
+    </style>
+
+</head>
+<body onload="updatePlayers(false)">
+
+<div class="row" style="margin-top:1%">
+    <div class="col-md-2" style="text-align:center">
+        <button type="button" class="btn btn-primary" onclick="home();">Home</button>
+    </div>
+    <div class="col-md-8" style="text-align:center">
+
+        <div th:if="${error!=null}" style="text-align:center; margin-top:1%"
+             class="alert alert-danger alert-dismissible">
+            <h4 class="error" th:text="${error}">Error message</h4>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <input type="hidden" id="gameId" th:value="${game.id}">
+
+        <div id="players" style="margin-top:1%"></div>
+
+        <hr class="rounded">
+
+        <button style="width:100%" th:if="${joinGame}" type="button" class="btn btn-primary" onclick="joinGame()" id="joinGameButton">
+            Join Game
+        </button>
+
+        <div class="row" id="error-alert" style="display:none;">
+            <hr class="rounded">
+            <div class="alert alert-danger" style="width:100%;height:50px;">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong id="errorText"> </strong>
+            </div>
+        </div>
+
+
+        <div id="startGameDiv" style="display:none;margin-top:1%">
+            <h3>All players joined the game. Game loading!</h3>
+            <progress value="0" max="3" id="progressBar" style="text-align:center;height:40px;"></progress>
+        </div>
+
+
+    </div>
+    <div class="col-md-2">
+        <div class="alert alert-success" id="join-player-alert" style="display:none">
+            <button type="button" class="close" data-dismiss="alert">x</button>
+            <strong id="playerJoinName"> </strong>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
