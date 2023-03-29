@@ -29,7 +29,7 @@ public class GameRepository {
         return gameMap.values()
                 .stream()
                 .filter(game -> game.getStatus() != GameStatus.FINISHED)
-                .map(GameDtoMapper::parse)
+                .map(g -> GameDtoMapper.parse(g, null))
                 .sorted(Comparator.comparing(GameDto::getStartTime).reversed())
                 .toList();
     }

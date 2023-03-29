@@ -1,0 +1,17 @@
+<span th:fragment="cardFrag(cardDto, stack)"
+     th:style="${'border-radius:5%; border: 2px solid black;width:8%;height:' + (stack==true ? '45' : '40') + '%;display: inline-block;background-color:'}"
+     th:styleappend="${cardDto!=null ? 'white' : '#1EB5DA'}"
+     th:id="${cardDto!=null ? (cardDto.suit.name + '_' + cardDto.rank.name()) : 'hiddenCard'}">
+
+    <div th:if="${stack==false && cardDto!=null && game.actualPlayer==game.playerIndex}">
+        <a href="#" th:onclick="selectCard([[${cardDto}]])">
+            <div th:replace="fragments/card-content :: cardContentFrag(cardDto=${cardDto})"/>
+        </a>
+    </div>
+      <div th:if="${stack==false && cardDto!=null && game.actualPlayer!=game.playerIndex}">
+            <div th:replace="fragments/card-content :: cardContentFrag(cardDto=${cardDto})"/>
+    </div>
+    <div th:if="${stack==true && cardDto!=null}">
+        <div th:replace="fragments/card-content :: cardContentFrag(cardDto=${cardDto})"/>
+    </div>
+</span>

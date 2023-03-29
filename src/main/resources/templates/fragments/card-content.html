@@ -1,0 +1,13 @@
+<div th:fragment="cardContentFrag(cardDto)">
+
+    <div class="row" style="margin-left:1%;">
+      <b id="cardRankTop" style="font-size:1.1vw;"
+         th:styleappend="${'color:' + cardDto.suit.color.hex}"
+         th:text="${cardDto.rank.name}">9</b>
+    </div>
+    <div class="row" style="width:100%;height:100%;text-align:center;margin: 0 auto;">
+      <i id="cardSuit" th:class="${cardDto.suit.iconClassName}"
+         th:style="${'margin: 0 auto;width:100%;text-align:center;font-size:1.5vw;color:' + cardDto.suit.color.hex}"></i>
+    </div>
+
+</div>

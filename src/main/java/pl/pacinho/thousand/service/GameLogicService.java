@@ -8,6 +8,7 @@ import pl.pacinho.thousand.model.dto.CardDto;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.enums.CardRank;
 import pl.pacinho.thousand.model.enums.CardSuit;
+import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.repository.GameRepository;
 
 import java.util.*;
@@ -42,6 +43,8 @@ public class GameLogicService {
         Stack<List<CardDto>> cardParts = partitionCards(cards, game.getPlayersCount());
         game.getPlayers()
                 .forEach(p -> p.setCards(new LinkedList<>(cardParts.pop())));
+
+        game.setStage(GameStage.AUCTION);
     }
 
     private Stack<List<CardDto>> partitionCards(List<CardDto> cards, int size) {

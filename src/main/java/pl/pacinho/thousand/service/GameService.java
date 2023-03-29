@@ -34,7 +34,7 @@ public class GameService {
     }
 
     public GameDto findDtoById(String gameId, String name) {
-        return GameDtoMapper.parse(gameLogicService.findById(gameId));
+        return GameDtoMapper.parse(gameLogicService.findById(gameId), name);
     }
 
     public void joinGame(String name, String gameId) throws IllegalStateException {

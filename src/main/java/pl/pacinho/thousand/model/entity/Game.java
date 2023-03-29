@@ -3,6 +3,7 @@ package pl.pacinho.thousand.model.entity;
 import lombok.Getter;
 import lombok.Setter;
 import pl.pacinho.thousand.model.dto.CardDto;
+import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,8 @@ public class Game {
     private String id;
     @Setter
     private GameStatus status;
+    @Setter
+    private GameStage stage;
     private LinkedList<Player> players;
     private LocalDateTime startTime;
     private int playersCount;
@@ -31,7 +34,7 @@ public class Game {
         this.id = UUID.randomUUID().toString();
         this.status = GameStatus.NEW;
         this.startTime = LocalDateTime.now();
-        this.actualPlayer=0;
+        this.actualPlayer=1;
         this.musik = new ArrayList<>();
         this.stack = new ArrayList<>();
     }
