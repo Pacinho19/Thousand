@@ -6,6 +6,7 @@ import pl.pacinho.thousand.model.dto.PlayerInfo;
 import pl.pacinho.thousand.model.dto.MusikInfoDto;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.entity.Player;
+import pl.pacinho.thousand.utils.AuctionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,6 +33,11 @@ public class GameDtoMapper {
                 .musikInfoDto(
                         getMusikInfo(game)
                 )
+                .roundPlayer(game.getRoundPlayer())
+                .auctionDto(game.getAuctionDto())
+                .canAuction(AuctionUtils.checkPlayerCanAuction(game, name))
+                .auctionSummary(game.getAuctionSummary())
+                .maxAuctionValue(AuctionUtils.getPlayerCardsValue(game, name))
                 .build();
     }
 

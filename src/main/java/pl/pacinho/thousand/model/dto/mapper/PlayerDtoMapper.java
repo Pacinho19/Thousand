@@ -6,7 +6,8 @@ import pl.pacinho.thousand.model.entity.Player;
 public class PlayerDtoMapper {
     public static PlayerDto parse(Player player) {
         return new PlayerDto(
-                player.getName()
+                player.getName(),
+                player.getAuctionOffer()
         );
     }
 }

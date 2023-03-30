@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import pl.pacinho.thousand.model.enums.GameStatus;
+import pl.pacinho.thousand.utils.AuctionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,6 +26,12 @@ public class GameDto {
     private int playersCount;
     private Integer actualPlayer;
     private Integer playerIndex;
+    private Integer roundPlayer;
+
+    private AuctionDto auctionDto;
+    private boolean canAuction;
+    private AuctionSummaryDto auctionSummary;
+    private int maxAuctionValue;
 
     public int getNextPlayer(int offset) {
         int idx = playerIndex + offset;

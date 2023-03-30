@@ -1,14 +1,14 @@
 package pl.pacinho.thousand.ui;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.pacinho.thousand.config.UIConfig;
+import pl.pacinho.thousand.model.dto.AuctionOfferDto;
 import pl.pacinho.thousand.model.dto.GameDto;
 import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.service.GameService;
@@ -93,6 +93,21 @@ public class GameController {
                               @PathVariable(value = "gameId") String gameId) {
         model.addAttribute("game", gameService.findDtoById(gameId, authentication.getName()));
         return "fragments/board :: boardFrag";
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping(UIConfig.GAME_AUCTION_OFFER)
+    public void auctionOffer(Authentication authentication,
+                             @RequestParam("value") int value,
+                             @PathVariable(value = "gameId") String gameId){
+        gameService.checkOffer(authentication.getName(), value, gameId);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping(UIConfig.GAME_AUCTION_PASS)
+    public void auctionPass(Authentication authentication,
+                             @PathVariable(value = "gameId") String gameId){
+        gameService.auctionPass(authentication.getName(), gameId);
     }
 
 }

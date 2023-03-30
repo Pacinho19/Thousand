@@ -2,6 +2,7 @@ package pl.pacinho.thousand.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.pacinho.thousand.model.dto.AuctionOfferDto;
 import pl.pacinho.thousand.model.dto.CardDto;
 
 import java.util.Collections;
@@ -14,6 +15,8 @@ public class Player {
     @Setter
     private List<CardDto> cards;
     private int points;
+    @Setter
+    private AuctionOfferDto auctionOffer;
 
     public Player(String name, int index) {
         this.name = name;
@@ -26,4 +29,7 @@ public class Player {
         this.points += points;
     }
 
+    public void addCards(List<CardDto> cards) {
+        this.cards.addAll(cards);
+    }
 }

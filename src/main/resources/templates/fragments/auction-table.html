@@ -1,0 +1,40 @@
+<div th:fragment="auctionTable" id="auctionTable" xmlns:th="http://www.w3.org/1999/xhtml">
+
+  <h3>Auction</h3>
+  <table style="margin-top:1%;" class="table table-bordered">
+    <thead class="">
+      <tr>
+        <th style="vertical-align: middle;"></th>
+        <th:block th:each="player : ${game.players}">
+          <th style="vertical-align: middle;" th:text="${player}"></th>
+        </th:block>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="vertical-align: middle;">Offer</span></td>
+        <th:block th:each="player : ${game.players}">
+          <td style="vertical-align: middle;" th:with="playerOffer=${game.auctionDto.offersMap.get(player)}">
+            <span th:if="${playerOffer!=null && !playerOffer.pass}" th:text="${playerOffer.value}" th:style="${game.auctionDto.highestOffer==playerOffer.value ? 'color:blue;font-weight: bold;' : 'color:black'}"> </span>
+            <span th:if="${playerOffer!=null && playerOffer.pass}" style="color:red">PASS</span>
+            <span th:if="${playerOffer==nul}" style="color:black">-</span>
+          </td>
+        </th:block>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="margin-top=1%;" th:if="${game.playerIndex==game.actualPlayer && game.canAuction}">
+    <form method="post" th:action="@{'/thousand/games/' + ${game.id} + '/auction/offer'}">
+      <input type="number" name="value" step="10" th:min="${game.auctionDto.highestOffer+10}" th:max="${game.maxAuctionValue}" th:value="${game.auctionDto.highestOffer+10}" style="display: inline block">
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+
+  <div class="margin-top=1%;" th:if="${game.playerIndex==game.actualPlayer}">
+    <form method="post" th:action="@{'/thousand/games/' + ${game.id} + '/auction/pass'}">
+      <button type="submit" class="btn btn-danger">PASS</button>
+    </form>
+  </div>
+
+</div>

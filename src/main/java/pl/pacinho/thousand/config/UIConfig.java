@@ -10,4 +10,7 @@ public class UIConfig {
     public static final String GAME_BOARD = GAME_PAGE + "/board";
     public static final String GAME_BOARD_RELOAD = GAME_BOARD + "/reload";
     public static final String GAME_OVER = GAME_PAGE + "/over";
+    public static final String GAME_AUCTION = GAME_PAGE + "/auction";
+    public static final String GAME_AUCTION_OFFER = GAME_AUCTION + "/offer";
+    public static final String GAME_AUCTION_PASS = GAME_AUCTION + "/pass";
 }

@@ -4,12 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
 import pl.pacinho.thousand.exception.GameNotFoundException;
+import pl.pacinho.thousand.model.dto.AuctionDto;
+import pl.pacinho.thousand.model.dto.AuctionOfferDto;
+import pl.pacinho.thousand.model.dto.AuctionSummaryDto;
 import pl.pacinho.thousand.model.dto.CardDto;
 import pl.pacinho.thousand.model.entity.Game;
+import pl.pacinho.thousand.model.entity.Player;
 import pl.pacinho.thousand.model.enums.CardRank;
 import pl.pacinho.thousand.model.enums.CardSuit;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.repository.GameRepository;
+import pl.pacinho.thousand.utils.AuctionUtils;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -45,6 +50,11 @@ public class GameLogicService {
                 .forEach(p -> p.setCards(new LinkedList<>(cardParts.pop())));
 
         game.setStage(GameStage.AUCTION);
+
+        AuctionDto auctionDto = new AuctionDto(100, game.getRoundPlayer());
+        auctionDto.addOffer(game.getPlayers().get(game.getRoundPlayer()).getName(), new AuctionOfferDto(100, false));
+        game.setActualPlayer(game.getNextPlayer(2));
+        game.setAuctionDto(auctionDto);
     }
 
     private Stack<List<CardDto>> partitionCards(List<CardDto> cards, int size) {
@@ -63,4 +73,33 @@ public class GameLogicService {
                 });
     }
 
+    public void setNextAuctionPlayer(Game game) {
+        int nextPlayerIdx = game.getNextPlayer(1) - 1;
+        while (true) {
+            Player player = game.getPlayers().get(nextPlayerIdx);
+            AuctionOfferDto playerOffer = game.getAuctionDto().getOffersMap().get(player.getName());
+            if (playerOffer == null) {
+                game.setActualPlayer(nextPlayerIdx + 1);
+                break;
+            }
+
+            if (playerOffer.pass()) {
+                nextPlayerIdx = game.getNextPlayer(1) - 1;
+                continue;
+            }
+
+            game.setActualPlayer(nextPlayerIdx + 1);
+            break;
+        }
+    }
+
+    public void endAuction(Game game) {
+        game.setStage(GameStage.END_AUCTION);
+        Player player = AuctionUtils.getWiningPlayer(game);
+        player.addCards(game.getMusik());
+        game.setAuctionSummary(new AuctionSummaryDto(player.getName(), game.getAuctionDto().getHighestOffer()));
+
+        game.setActualPlayer(player.getIndex());
+        game.setAuctionDto(null);
+    }
 }

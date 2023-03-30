@@ -2,6 +2,8 @@ package pl.pacinho.thousand.model.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.pacinho.thousand.model.dto.AuctionDto;
+import pl.pacinho.thousand.model.dto.AuctionSummaryDto;
 import pl.pacinho.thousand.model.dto.CardDto;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
@@ -26,6 +28,12 @@ public class Game {
     private List<CardDto> musik;
     @Setter
     private List<CardDto> stack;
+    @Setter
+    private int roundPlayer;
+    @Setter
+    private AuctionDto auctionDto;
+    @Setter
+    private AuctionSummaryDto auctionSummary;
 
     public Game(String player1, int playersCount) {
         this.playersCount = playersCount;
@@ -34,18 +42,27 @@ public class Game {
         this.id = UUID.randomUUID().toString();
         this.status = GameStatus.NEW;
         this.startTime = LocalDateTime.now();
-        this.actualPlayer=1;
+        this.actualPlayer = 1;
+        this.roundPlayer = 1;
         this.musik = new ArrayList<>();
         this.stack = new ArrayList<>();
     }
+
     public void addCardToStack(CardDto cardDto) {
         this.stack.add(cardDto);
     }
+
     public void clearStack() {
         this.stack.clear();
     }
 
     public void addCardToMusik(CardDto cardDto) {
         this.musik.add(cardDto);
+    }
+
+    public int getNextPlayer(int offset) {
+        int idx = actualPlayer + offset;
+        if (idx > playersCount) return idx - playersCount;
+        return idx;
     }
 }
