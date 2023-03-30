@@ -10,10 +10,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.pacinho.thousand.config.UIConfig;
 import pl.pacinho.thousand.model.dto.AuctionOfferDto;
 import pl.pacinho.thousand.model.dto.GameDto;
+import pl.pacinho.thousand.model.dto.GiveCardRequestDto;
 import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.service.GameService;
 
 import javax.websocket.server.PathParam;
+import java.util.LinkedList;
 
 @RequiredArgsConstructor
 @Controller
@@ -99,15 +101,32 @@ public class GameController {
     @PostMapping(UIConfig.GAME_AUCTION_OFFER)
     public void auctionOffer(Authentication authentication,
                              @RequestParam("value") int value,
-                             @PathVariable(value = "gameId") String gameId){
+                             @PathVariable(value = "gameId") String gameId) {
         gameService.checkOffer(authentication.getName(), value, gameId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping(UIConfig.GAME_AUCTION_PASS)
     public void auctionPass(Authentication authentication,
-                             @PathVariable(value = "gameId") String gameId){
+                            @PathVariable(value = "gameId") String gameId) {
         gameService.auctionPass(authentication.getName(), gameId);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping(UIConfig.GAME_AUCTION_GIVE_CARD)
+    public void auctionGiveCard(Authentication authentication,
+                                @RequestBody GiveCardRequestDto giveCardRequest,
+                                @PathVariable(value = "gameId") String gameId) {
+        gameService.auctionGiveCard(authentication.getName(), gameId, giveCardRequest);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping(UIConfig.GAME_AUCTION_CONFIRMATION_POINTS)
+    public void auctionGiveCard(Authentication authentication,
+                                @RequestParam("value") int value,
+                                @PathVariable(value = "gameId") String gameId) {
+        gameService.auctionConfirmationPoints(authentication.getName(), gameId, value);
+    }
+
 
 }

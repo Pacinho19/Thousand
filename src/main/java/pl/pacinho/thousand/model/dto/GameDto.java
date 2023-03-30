@@ -3,6 +3,7 @@ package pl.pacinho.thousand.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.utils.AuctionUtils;
 
@@ -17,6 +18,7 @@ public class GameDto {
 
     private String id;
     private GameStatus status;
+    private GameStage stage;
     private List<String> players;
     private LocalDateTime startTime;
 

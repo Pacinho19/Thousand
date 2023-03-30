@@ -34,6 +34,8 @@ public class Game {
     private AuctionDto auctionDto;
     @Setter
     private AuctionSummaryDto auctionSummary;
+    @Setter
+    private int roundPoints;
 
     public Game(String player1, int playersCount) {
         this.playersCount = playersCount;

@@ -19,6 +19,7 @@ public class GameDtoMapper {
                 .startTime(game.getStartTime())
                 .players(game.getPlayers().stream().map(Player::getName).sorted().toList())
                 .status(game.getStatus())
+                .stage(game.getStage())
                 .cards(
                         getCards(game.getPlayers(), name)
                 )

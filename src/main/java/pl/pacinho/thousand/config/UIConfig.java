@@ -13,4 +13,6 @@ public class UIConfig {
     public static final String GAME_AUCTION = GAME_PAGE + "/auction";
     public static final String GAME_AUCTION_OFFER = GAME_AUCTION + "/offer";
     public static final String GAME_AUCTION_PASS = GAME_AUCTION + "/pass";
+    public static final String GAME_AUCTION_GIVE_CARD = GAME_AUCTION + "/give-card";
+    public static final String GAME_AUCTION_CONFIRMATION_POINTS = GAME_AUCTION + "/confirmation-points";
 }

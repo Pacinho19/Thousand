@@ -5,8 +5,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import pl.pacinho.thousand.model.dto.AuctionOfferDto;
 import pl.pacinho.thousand.model.dto.GameDto;
+import pl.pacinho.thousand.model.dto.GiveCardRequestDto;
 import pl.pacinho.thousand.model.dto.mapper.GameDtoMapper;
 import pl.pacinho.thousand.model.entity.Game;
+import pl.pacinho.thousand.model.entity.Player;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.repository.GameRepository;
@@ -67,7 +69,6 @@ public class GameService {
 
         gameLogicService.setNextAuctionPlayer(game);
         simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
-
     }
 
     public void auctionPass(String name, String gameId) {
@@ -76,7 +77,7 @@ public class GameService {
             return;
 
         game.getAuctionDto().addOffer(name, new AuctionOfferDto(0, true));
-        if(!AuctionUtils.checkEndAuction(game))
+        if (!AuctionUtils.checkEndAuction(game))
             gameLogicService.setNextAuctionPlayer(game);
         else
             gameLogicService.endAuction(game);
@@ -94,12 +95,47 @@ public class GameService {
         if (!pass && value > AuctionUtils.getPlayerCardsValue(game, name))
             return false; //TODO MESSAGE
 
-        if(!pass && value % 10 > 0)
+        if (!pass && value % 10 > 0)
             return false; //TODO MESSAGE
 
         if (!game.getPlayers().get(game.getActualPlayer() - 1).getName().equals(name))
             return false; //TODO MESSAGE
 
         return true;
+    }
+
+    public void auctionGiveCard(String name, String gameId, GiveCardRequestDto giveCardRequest) {
+        Game game = gameLogicService.findById(gameId);
+        if (game.getAuctionSummary() == null || !game.getAuctionSummary().playerName().equals(name))
+            return; //TODO MESSAGE
+
+        if (giveCardRequest == null)
+            return; //TODO MESSAGE
+
+        Player targetPlayer = GameUtils.getPlayer(game, giveCardRequest.playerName());
+        targetPlayer.addCards(List.of(giveCardRequest.card()));
+
+        Player sourcePlayer = GameUtils.getPlayer(game, name);
+        sourcePlayer.getCards()
+                .remove(GameUtils.findCard(sourcePlayer.getCards(), giveCardRequest.card()));
+
+        if (GameUtils.allPlayersHasTheSameCardsCount(game))
+            game.setStage(GameStage.CONFIRMATION_POINTS);
+
+        simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
+    }
+
+    public void auctionConfirmationPoints(String name, String gameId, int value) {
+        Game game = gameLogicService.findById(gameId);
+        if (game.getAuctionSummary() == null || !game.getAuctionSummary().playerName().equals(name))
+            return; //TODO MESSAGE
+
+        if (game.getAuctionSummary().value() > value)
+            return; //TODO MESSAGE
+
+        game.setRoundPoints(value);
+        game.setStage(GameStage.GAME_ON);
+
+        simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
     }
 }

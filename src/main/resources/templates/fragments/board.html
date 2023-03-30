@@ -37,7 +37,7 @@
                             <th:block th:each="i : ${#numbers.sequence(1,playerInfo.cardsCount)}"
                                       th:if="${playerInfo.cardsCount>0 }">
                                 <div
-                                        th:replace="fragments/card-vertical :: cardFrag(cardDto=null, stack=false)"/>
+                                        th:replace="fragments/card-vertical :: cardFrag(game=null, cardDto=null, stack=false)"/>
                             </th:block>
                         </th:block>
                         <th:block th:if="${game.playersCount>2}"
@@ -47,7 +47,7 @@
                                     th:if="${playerInfo.cardsCount!=null  && playerInfo.cardsCount>0}">
                                 <th:block th:each="i : ${#numbers.sequence(1, playerInfo.cardsCount)}">
                                     <div
-                                            th:replace="fragments/card-vertical :: cardFrag(cardDto=null, stack=false)"/>
+                                            th:replace="fragments/card-vertical :: cardFrag(game=null, cardDto=null, stack=false)"/>
                                 </th:block>
                             </th:block>
                         </th:block>
@@ -80,17 +80,33 @@
                                                 th:text="${game.auctionSummary.toString()}"></h3>
                                         </div>
                                         <div class="row"
-                                             style="width:100%;;height:90%;margin-left:17%;margin:auto;display: flex;justify-content: center;align-items: center">
+                                             style="width:100%;;height:80%;margin-left:17%;margin:auto;display: flex;justify-content: center;align-items: center">
                                             <th:block th:each="cardDto : ${game.musikInfoDto.cards}">
                                                 <div
-                                                        th:replace="fragments/card-vertical :: cardFrag(cardDto=${cardDto}, stack=true)"/>
+                                                        th:replace="fragments/card-vertical :: cardFrag(game=null, cardDto=${cardDto}, stack=true)"/>
                                             </th:block>
                                         </div>
+
                                     </th:block>
                                     <th:block th:if="${game.musikInfoDto.cards==null && game.auctionDto!=null}">
                                         <div th:replace="fragments/auction-table :: auctionTable"/>
                                     </th:block>
                                 </th:block>
+                                <div th:if="${game.stage.name=='CONFIRMATION_POINTS' && game.actualPlayer==game.playerIndex}"
+                                     style="height:90%;margin:auto;justify-content: center;align-items: center">
+
+                                        <h2>Select round points</h2>
+
+                                        <form method="post"
+                                              th:action="@{'/thousand/games/' + ${game.id} + '/auction/confirmation-points'}"
+                                              style="margin-top:1%">
+                                            <input type="number" name="value" step="10"
+                                                   th:min="${game.auctionSummary.value}"
+                                                   th:value="${game.auctionSummary.value}"
+                                                   style="display: inline block">
+                                            <button type="submit" class="btn btn-primary">Send</button>
+                                        </form>
+                                </div>
                             </div>
                             <div class="row"
                                  style="width:90%;height:10%;margin:auto;display: flex;justify-content: center;align-items: center;">
@@ -115,12 +131,12 @@
                          style="width:90%;height:26%;margin:auto;display: flex;justify-content: center;align-items: center;">
                         <th:block th:each="cardDto : ${game.cards}">
                             <div
-                                    th:replace="fragments/card-vertical :: cardFrag(cardDto=${cardDto}, stack=false)"/>
+                                    th:replace="fragments/card-vertical :: cardFrag(game=${game}, cardDto=${cardDto}, stack=false)"/>
                         </th:block>
                     </div>
 
                     <div
-                            id="throwOneBtnDiv"
+                            id="targetPlayerDiv"
                             class="row"
                             style="width:90%;height:3%;margin:auto;display: flex;justify-content: center;align-items: center;">
                     </div>

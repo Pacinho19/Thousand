@@ -23,6 +23,7 @@ public class AuctionUtils {
 
     public static Integer getPlayerCardsValue(Game game, String name) {
         if (game.getAuctionDto() == null) return 0;
+        if (name == null) return 0;
 
         Player player = GameUtils.getPlayer(game, name);
         return player.getCards()
