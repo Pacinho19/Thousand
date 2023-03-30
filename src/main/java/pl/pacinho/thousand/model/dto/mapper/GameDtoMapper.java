@@ -87,7 +87,7 @@ public class GameDtoMapper {
 
         if (playerOptional.isPresent()) {
             List<CardDto> cards = playerOptional.get().getCards();
-            cards.sort(Comparator.comparing(c -> c.getRank().getValue()));
+            cards.sort(Comparator.comparing(CardDto::getSuit).thenComparing(c -> c.getRank().getValue()));
             return cards;
         }
         return Collections.emptyList();

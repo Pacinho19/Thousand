@@ -36,6 +36,7 @@ let selectedCard =null;
 function giveCardToPlayer(card, playersInfo){
     if(selectedCard!=null && (selectedCard.suit!==card.suit || selectedCard.rank!==card.rank)){
         slideOutCard(selectedCard);
+        removeGiveCardBtn();
     }
     slideOutCard(card);
 
