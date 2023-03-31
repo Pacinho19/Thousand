@@ -1,6 +1,7 @@
 package pl.pacinho.thousand.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import pl.pacinho.thousand.model.dto.AuctionOfferDto;
@@ -104,6 +105,7 @@ public class GameService {
         return true;
     }
 
+    @SneakyThrows
     public void auctionGiveCard(String name, String gameId, GiveCardRequestDto giveCardRequest) {
         Game game = gameLogicService.findById(gameId);
         if (game.getAuctionSummary() == null || !game.getAuctionSummary().playerName().equals(name))
@@ -123,6 +125,8 @@ public class GameService {
             game.setStage(GameStage.CONFIRMATION_POINTS);
 
         simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
+        Thread.sleep(500);
+        simpMessagingTemplate.convertAndSendToUser(giveCardRequest.playerName(), "/reload-board/" + game.getId(), giveCardRequest.card());
     }
 
     public void auctionConfirmationPoints(String name, String gameId, int value) {

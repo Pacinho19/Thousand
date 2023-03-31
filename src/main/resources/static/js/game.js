@@ -8,8 +8,11 @@ privateStompClient.connect({}, function (frame) {
     privateStompClient.subscribe('/reload-board/' + gameId, function (result) {
         updateBoard();
     });
-});
 
+    privateStompClient.subscribe('/users/reload-board/' + gameId, function (result) {
+        slideCard(JSON.parse(result.body));
+    });
+});
 stompClient = Stomp.over(socket);
 
 function updateBoard() {
@@ -17,6 +20,7 @@ function updateBoard() {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == XMLHttpRequest.DONE) {
             $("#board").replaceWith(xhr.responseText);
+            console.log('board reloaded successfully');
         }
     }
     xhr.open('GET', "/thousand/games/" + document.getElementById("gameId").value + "/board/reload", true);
@@ -95,4 +99,9 @@ function sendGiveCardRequest(name){
         xhr.send(data);
 
         selectedCard = null
+}
+
+function slideCard(cardDto){
+    var cardSpan = document.getElementById(cardObj.suit + '_' + cardObj.rank);
+    cardSpan.style.marginBottom = '3%';
 }
