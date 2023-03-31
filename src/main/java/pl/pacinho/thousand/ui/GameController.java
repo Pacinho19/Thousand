@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.pacinho.thousand.config.UIConfig;
 import pl.pacinho.thousand.model.dto.AuctionOfferDto;
+import pl.pacinho.thousand.model.dto.CardDto;
 import pl.pacinho.thousand.model.dto.GameDto;
 import pl.pacinho.thousand.model.dto.GiveCardRequestDto;
 import pl.pacinho.thousand.model.enums.GameStatus;
@@ -126,6 +127,14 @@ public class GameController {
                                 @RequestParam("value") int value,
                                 @PathVariable(value = "gameId") String gameId) {
         gameService.auctionConfirmationPoints(authentication.getName(), gameId, value);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping(UIConfig.GAME_MOVE)
+    public void move(Authentication authentication,
+                     @RequestBody CardDto cardDto,
+                     @PathVariable(value = "gameId") String gameId) {
+        gameService.move(authentication.getName(), gameId, cardDto);
     }
 
 

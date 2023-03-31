@@ -5,6 +5,7 @@ import lombok.Setter;
 import pl.pacinho.thousand.model.dto.AuctionDto;
 import pl.pacinho.thousand.model.dto.AuctionSummaryDto;
 import pl.pacinho.thousand.model.dto.CardDto;
+import pl.pacinho.thousand.model.enums.CardSuit;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
 
@@ -27,7 +28,7 @@ public class Game {
     @Setter
     private List<CardDto> musik;
     @Setter
-    private List<CardDto> stack;
+    private Map<Player, CardDto> stack;
     @Setter
     private int roundPlayer;
     @Setter
@@ -36,6 +37,8 @@ public class Game {
     private AuctionSummaryDto auctionSummary;
     @Setter
     private int roundPoints;
+    @Setter
+    private CardSuit superCardSuit;
 
     public Game(String player1, int playersCount) {
         this.playersCount = playersCount;
@@ -47,11 +50,11 @@ public class Game {
         this.actualPlayer = 1;
         this.roundPlayer = 1;
         this.musik = new ArrayList<>();
-        this.stack = new ArrayList<>();
+        this.stack = new HashMap<>();
     }
 
-    public void addCardToStack(CardDto cardDto) {
-        this.stack.add(cardDto);
+    public void addCardToStack(Player player, CardDto cardDto) {
+        this.stack.put(player, cardDto);
     }
 
     public void clearStack() {

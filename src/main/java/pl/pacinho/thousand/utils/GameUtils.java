@@ -30,4 +30,14 @@ public class GameUtils {
                        .distinct()
                        .count() == 1;
     }
+
+    public static boolean checkPlayer(Game game, String name) {
+        return game.getPlayers().get(game.getActualPlayer() - 1)
+                .getName().equals(name);
+    }
+
+    public static boolean checkCard(List<CardDto> cards, CardDto cardDto) {
+        return cards.stream()
+                .anyMatch(c -> c.equals(cardDto));
+    }
 }

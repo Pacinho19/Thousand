@@ -102,6 +102,16 @@ function sendGiveCardRequest(name){
 }
 
 function slideCard(cardDto){
-    var cardSpan = document.getElementById(cardObj.suit + '_' + cardObj.rank);
+    var cardSpan = document.getElementById(cardDto.suit + '_' + cardDto.rank);
     cardSpan.style.marginBottom = '3%';
+}
+
+function selectCard(cardDto) {
+     var xhr = new XMLHttpRequest();
+        var url = '/thousand/games/' + document.getElementById("gameId").value + '/move';
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () { };
+        var data = JSON.stringify(cardDto);
+        xhr.send(data);
 }

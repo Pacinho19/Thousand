@@ -98,8 +98,12 @@ public class GameLogicService {
         Player player = AuctionUtils.getWiningPlayer(game);
         player.addCards(game.getMusik());
         game.setAuctionSummary(new AuctionSummaryDto(player.getName(), game.getAuctionDto().getHighestOffer()));
-
+        game.setRoundPoints(game.getAuctionDto().getHighestOffer());
         game.setActualPlayer(player.getIndex());
         game.setAuctionDto(null);
+    }
+
+    public void checkBattle(Game game) {
+        //TODO
     }
 }

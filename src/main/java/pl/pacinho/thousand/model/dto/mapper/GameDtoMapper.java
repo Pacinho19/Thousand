@@ -35,11 +35,23 @@ public class GameDtoMapper {
                         getMusikInfo(game)
                 )
                 .roundPlayer(game.getRoundPlayer())
+                .roundPoints(game.getRoundPoints())
                 .auctionDto(game.getAuctionDto())
                 .canAuction(AuctionUtils.checkPlayerCanAuction(game, name))
                 .auctionSummary(game.getAuctionSummary())
                 .maxAuctionValue(AuctionUtils.getPlayerCardsValue(game, name))
+                .stack(getStack(game))
                 .build();
+    }
+
+    private static Map<String, CardDto> getStack(Game game) {
+        return game.getStack()
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        e -> e.getKey().getName(),
+                        Map.Entry::getValue
+                ));
     }
 
     private static MusikInfoDto getMusikInfo(Game game) {

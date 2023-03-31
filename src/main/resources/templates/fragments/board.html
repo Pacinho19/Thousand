@@ -73,12 +73,23 @@
                             </div>
                             <div class="row"
                                  style="width:100%;;height:80%;margin-left:17%;margin:auto;justify-content: center;align-items: center">
+                                <div class="row"
+                                     th:if="${game.roundPoints>0 && game.stage.name!='CONFIRMATION_POINTS'}"
+                                     style="height:10%">
+                                    <h3 style="text-align:center;width:100%"
+                                        th:text="${game.auctionSummary.playerName + ': ' + game.roundPoints}"></h3>
+                                </div>
+                                <th:block th:if="${game.stage.name=='GAME_ON'}">
+                                    <div class="row"
+                                         style="width:100%;;height:80%;margin-left:17%;margin:auto;display: flex;justify-content: center;align-items: center">
+                                        <th:block th:each="stackMap : ${game.stack}">
+                                            <div th:replace="fragments/card-vertical :: cardFrag(game=null, cardDto=${stackMap.value}, stack=true)"/>
+                                        </th:block>
+                                    </div>
+                                </th:block>
                                 <th:block th:if="${game.musikInfoDto!=null}">
                                     <th:block th:if="${game.musikInfoDto.cards!=null}">
-                                        <div class="row" th:if="${game.auctionSummary!=null}" style="height:10%">
-                                            <h3 style="text-align:center;width:100%"
-                                                th:text="${game.auctionSummary.toString()}"></h3>
-                                        </div>
+
                                         <div class="row"
                                              style="width:100%;;height:80%;margin-left:17%;margin:auto;display: flex;justify-content: center;align-items: center">
                                             <th:block th:each="cardDto : ${game.musikInfoDto.cards}">
@@ -95,17 +106,17 @@
                                 <div th:if="${game.stage.name=='CONFIRMATION_POINTS' && game.actualPlayer==game.playerIndex}"
                                      style="height:90%;margin:auto;justify-content: center;align-items: center">
 
-                                        <h2>Select round points</h2>
+                                    <h2>Select round points</h2>
 
-                                        <form method="post"
-                                              th:action="@{'/thousand/games/' + ${game.id} + '/auction/confirmation-points'}"
-                                              style="margin-top:1%">
-                                            <input type="number" name="value" step="10"
-                                                   th:min="${game.auctionSummary.value}"
-                                                   th:value="${game.auctionSummary.value}"
-                                                   style="display: inline block">
-                                            <button type="submit" class="btn btn-primary">Send</button>
-                                        </form>
+                                    <form method="post"
+                                          th:action="@{'/thousand/games/' + ${game.id} + '/auction/confirmation-points'}"
+                                          style="margin-top:1%">
+                                        <input type="number" name="value" step="10"
+                                               th:min="${game.auctionSummary.value}"
+                                               th:value="${game.auctionSummary.value}"
+                                               style="display: inline block">
+                                        <button type="submit" class="btn btn-primary">Send</button>
+                                    </form>
                                 </div>
                             </div>
                             <div class="row"

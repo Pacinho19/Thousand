@@ -23,6 +23,7 @@ public class GameDto {
     private LocalDateTime startTime;
 
     private List<CardDto> cards;
+    private Map<String, CardDto> stack;
     private MusikInfoDto musikInfoDto;
     private Map<Integer, PlayerInfo> playersInfo;
     private int playersCount;
@@ -34,10 +35,12 @@ public class GameDto {
     private boolean canAuction;
     private AuctionSummaryDto auctionSummary;
     private int maxAuctionValue;
+    private int roundPoints;
 
     public int getNextPlayer(int offset) {
         int idx = playerIndex + offset;
         if (idx > playersCount) return idx - playersCount;
         return idx;
     }
+
 }
