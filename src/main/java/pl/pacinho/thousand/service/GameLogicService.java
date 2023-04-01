@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.stereotype.Service;
 import pl.pacinho.thousand.exception.GameNotFoundException;
-import pl.pacinho.thousand.model.dto.AuctionDto;
-import pl.pacinho.thousand.model.dto.AuctionOfferDto;
-import pl.pacinho.thousand.model.dto.AuctionSummaryDto;
-import pl.pacinho.thousand.model.dto.CardDto;
+import pl.pacinho.thousand.model.dto.*;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.entity.Player;
 import pl.pacinho.thousand.model.enums.CardRank;
@@ -52,6 +49,10 @@ public class GameLogicService {
 
         game.setStage(GameStage.AUCTION);
 
+        setAuction(game);
+    }
+
+    private static void setAuction(Game game) {
         AuctionDto auctionDto = new AuctionDto(100, game.getRoundPlayer());
         auctionDto.addOffer(game.getPlayers().get(game.getRoundPlayer()).getName(), new AuctionOfferDto(100, false));
         game.setActualPlayer(game.getNextPlayer(2));
@@ -111,7 +112,7 @@ public class GameLogicService {
                 .get()
                 .getKey();
 
-        winPlayer.addRoundCards(game.getStack().values());
+        winPlayer.getRoundSummaryDto().addCards(game.getStack().values());
         game.setActualPlayer(winPlayer.getIndex());
         game.clearStack();
     }
@@ -128,12 +129,16 @@ public class GameLogicService {
     }
 
     public void checkSuperCardCheckIn(CardDto cardDto, Game game, Player player) {
-        if (cardDto.getRank() != CardRank.QUEEN && cardDto.getRank() != CardRank.KING)
+        if (cardDto.getRank() != CardRank.QUEEN && cardDto.getRank() != CardRank.KING )
+            return;
+
+        if(!game.getStack().isEmpty())
             return;
 
         if (!checkCardPair(cardDto, player.getCards()))
             return;
 
+        player.getRoundSummaryDto().addCheckInValue(cardDto.getSuit().getPoints());
         game.setSuperCardSuit(cardDto.getSuit());
     }
 
@@ -141,5 +146,39 @@ public class GameLogicService {
         return cards.stream()
                 .anyMatch(c -> c.getSuit() == card.getSuit()
                         && c.getRank() == card.getRank().getPair());
+    }
+
+    public void checkEndOfRound(Game game) {
+        if (!GameUtils.allPlayersHasNoCards(game))
+            return;
+
+        game.getPlayers()
+                .forEach(p -> calculatePoints(game.getAuctionSummary(), p, game.getRoundPoints()));
+
+        int nextPlayer = GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getRoundPlayer());
+        game.setRoundPoints(0);
+        game.setSuperCardSuit(null);
+        game.setRoundPlayer(nextPlayer);
+        game.setActualPlayer(nextPlayer + 1);
+
+        dealTheCards(game);
+    }
+
+    private void calculatePoints(AuctionSummaryDto auctionSummary, Player p, int roundPoints) {
+        int points = calculatePlayerRoundPoints(p.getRoundSummaryDto());
+        if (auctionSummary.playerName().equals(p.getName()))
+            p.addPoints(points >= roundPoints ? roundPoints : roundPoints * -1);
+        else
+            p.addPoints(points);
+
+        p.getCards().clear();
+        p.setRoundSummaryDto(null);
+        p.setAuctionOffer(null);
+    }
+
+    private int calculatePlayerRoundPoints(RoundSummaryDto roundSummary) {
+        return roundSummary.getCards().stream()
+                .map(c -> c.getRank().getValue())
+                .reduce(roundSummary.getCheckInValue(), Integer::sum);
     }
 }

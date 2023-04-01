@@ -153,6 +153,7 @@ public class GameService {
         else
             game.setActualPlayer(game.getNextPlayer(1));
 
+        gameLogicService.checkEndOfRound(game);
         simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
     }
 }

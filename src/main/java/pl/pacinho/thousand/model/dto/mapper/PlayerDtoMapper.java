@@ -7,7 +7,8 @@ public class PlayerDtoMapper {
     public static PlayerDto parse(Player player) {
         return new PlayerDto(
                 player.getName(),
-                player.getAuctionOffer()
+                player.getAuctionOffer(),
+                player.getPoints()
         );
     }
 }

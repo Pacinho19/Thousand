@@ -57,4 +57,9 @@ public class GameUtils {
             return 0;
         return actualIdx + 1;
     }
+
+    public static boolean allPlayersHasNoCards(Game game) {
+        return game.getPlayers().stream()
+                .allMatch(p -> p.getCards().isEmpty());
+    }
 }
