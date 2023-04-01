@@ -13,6 +13,7 @@ import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.repository.GameRepository;
 import pl.pacinho.thousand.utils.AuctionUtils;
 import pl.pacinho.thousand.utils.GameUtils;
+import pl.pacinho.thousand.utils.NumberUtils;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -129,10 +130,10 @@ public class GameLogicService {
     }
 
     public void checkSuperCardCheckIn(CardDto cardDto, Game game, Player player) {
-        if (cardDto.getRank() != CardRank.QUEEN && cardDto.getRank() != CardRank.KING )
+        if (cardDto.getRank() != CardRank.QUEEN && cardDto.getRank() != CardRank.KING)
             return;
 
-        if(!game.getStack().isEmpty())
+        if (!game.getStack().isEmpty())
             return;
 
         if (!checkCardPair(cardDto, player.getCards()))
@@ -169,7 +170,7 @@ public class GameLogicService {
         if (auctionSummary.playerName().equals(p.getName()))
             p.addPoints(points >= roundPoints ? roundPoints : roundPoints * -1);
         else
-            p.addPoints(points);
+            p.addPoints(NumberUtils.roundToNearest10(points));
 
         p.getCards().clear();
         p.setRoundSummaryDto(null);
