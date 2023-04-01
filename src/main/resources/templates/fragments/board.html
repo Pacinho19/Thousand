@@ -75,9 +75,15 @@
                                  style="width:100%;;height:80%;margin-left:17%;margin:auto;justify-content: center;align-items: center">
                                 <div class="row"
                                      th:if="${game.roundPoints>0 && game.stage.name!='CONFIRMATION_POINTS'}"
-                                     style="height:10%">
-                                    <h3 style="text-align:center;width:100%"
-                                        th:text="${game.auctionSummary.playerName + ': ' + game.roundPoints}"></h3>
+                                     style="height:10%;width:100%;justify-content: center;align-items: center">
+                                    <h5 style="text-align:center;margin: 0 0"
+                                        th:text="${game.auctionSummary.playerName + ': ' + game.roundPoints}"></h5>
+
+                                    <h5 style="text-align:center;margin: 0 0"
+                                        th:if="${game.superCardSuit!=null}"> / Super Card</h5>
+
+                                    <i th:if="${game.superCardSuit!=null}" th:class="${game.superCardSuit.iconClassName}"
+                                       th:style="${'margin-left:1%;text-align:center;font-size:1.1vw;color:' + game.superCardSuit.color.hex}"></i>
                                 </div>
                                 <th:block th:if="${game.stage.name=='GAME_ON'}">
                                     <div class="row"

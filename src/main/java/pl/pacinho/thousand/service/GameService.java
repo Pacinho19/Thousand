@@ -11,6 +11,7 @@ import pl.pacinho.thousand.model.dto.GiveCardRequestDto;
 import pl.pacinho.thousand.model.dto.mapper.GameDtoMapper;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.entity.Player;
+import pl.pacinho.thousand.model.enums.CardRank;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.repository.GameRepository;
@@ -141,6 +142,8 @@ public class GameService {
 
         if (!GameUtils.checkCard(player.getCards(), cardDto))
             return; //TODO MESSAGE
+
+        gameLogicService.checkSuperCardCheckIn(cardDto, game, player);
 
         game.addCardToStack(player, cardDto);
         player.getCards().remove(GameUtils.findCard(player.getCards(), cardDto));

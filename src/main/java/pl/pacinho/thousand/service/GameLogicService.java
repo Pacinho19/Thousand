@@ -75,7 +75,7 @@ public class GameLogicService {
     }
 
     public void setNextAuctionPlayer(Game game) {
-        int nextPlayerIdx = GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getActualPlayer()-1);
+        int nextPlayerIdx = GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getActualPlayer() - 1);
         while (true) {
             Player player = game.getPlayers().get(nextPlayerIdx);
             AuctionOfferDto playerOffer = game.getAuctionDto().getOffersMap().get(player.getName());
@@ -125,5 +125,21 @@ public class GameLogicService {
         return stack.entrySet()
                 .stream()
                 .anyMatch(es -> es.getValue().getSuit() == superCardSuit);
+    }
+
+    public void checkSuperCardCheckIn(CardDto cardDto, Game game, Player player) {
+        if (cardDto.getRank() != CardRank.QUEEN && cardDto.getRank() != CardRank.KING)
+            return;
+
+        if (!checkCardPair(cardDto, player.getCards()))
+            return;
+
+        game.setSuperCardSuit(cardDto.getSuit());
+    }
+
+    private boolean checkCardPair(CardDto card, List<CardDto> cards) {
+        return cards.stream()
+                .anyMatch(c -> c.getSuit() == card.getSuit()
+                        && c.getRank() == card.getRank().getPair());
     }
 }

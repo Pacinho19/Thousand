@@ -41,6 +41,7 @@ public class GameDtoMapper {
                 .auctionSummary(game.getAuctionSummary())
                 .maxAuctionValue(AuctionUtils.getPlayerCardsValue(game, name))
                 .stack(getStack(game))
+                .superCardSuit(game.getSuperCardSuit())
                 .build();
     }
 

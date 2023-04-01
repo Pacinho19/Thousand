@@ -3,6 +3,7 @@ package pl.pacinho.thousand.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import pl.pacinho.thousand.model.enums.CardSuit;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.utils.AuctionUtils;
@@ -36,6 +37,7 @@ public class GameDto {
     private AuctionSummaryDto auctionSummary;
     private int maxAuctionValue;
     private int roundPoints;
+    private CardSuit superCardSuit;
 
     public int getNextPlayer(int offset) {
         int idx = playerIndex + offset;
