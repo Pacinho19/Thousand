@@ -152,9 +152,4 @@ public class GameService {
 
         simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
     }
-
-    private void checkBattle(Game game) {
-
-        game.clearStack();
-    }
 }

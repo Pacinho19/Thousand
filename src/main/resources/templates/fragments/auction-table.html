@@ -1,6 +1,5 @@
 <div th:fragment="auctionTable" id="auctionTable" xmlns:th="http://www.w3.org/1999/xhtml">
 
-  <h3>Auction</h3>
   <table style="margin-top:1%;" class="table table-bordered">
     <thead class="">
       <tr>
@@ -24,16 +23,15 @@
     </tbody>
   </table>
 
-  <div class="margin-top=1%;" th:if="${game.playerIndex==game.actualPlayer && game.canAuction}">
-    <form method="post" th:action="@{'/thousand/games/' + ${game.id} + '/auction/offer'}">
+  <div class="row" th:if="${game.playerIndex==game.actualPlayer}" style="margin:auto;justify-content: center;align-items: center">
+
+    <form th:if="${game.canAuction}" method="post" th:action="@{'/thousand/games/' + ${game.id} + '/auction/offer'}">
       <input type="number" name="value" step="10" th:min="${game.auctionDto.highestOffer+10}" th:max="${game.maxAuctionValue}" th:value="${game.auctionDto.highestOffer+10}" style="display: inline block">
       <button type="submit" class="btn btn-primary">Send</button>
     </form>
-  </div>
 
-  <div class="margin-top=1%;" th:if="${game.playerIndex==game.actualPlayer}">
-    <form method="post" th:action="@{'/thousand/games/' + ${game.id} + '/auction/pass'}">
-      <button type="submit" class="btn btn-danger">PASS</button>
+    <form  style="margin-left:1%" method="post" th:action="@{'/thousand/games/' + ${game.id} + '/auction/pass'}">
+      <button type="submit" class="btn btn-danger" style="margin-left:1%">PASS</button>
     </form>
   </div>
 

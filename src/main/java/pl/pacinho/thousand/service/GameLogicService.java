@@ -15,6 +15,7 @@ import pl.pacinho.thousand.model.enums.CardSuit;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.repository.GameRepository;
 import pl.pacinho.thousand.utils.AuctionUtils;
+import pl.pacinho.thousand.utils.GameUtils;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -74,22 +75,16 @@ public class GameLogicService {
     }
 
     public void setNextAuctionPlayer(Game game) {
-        int nextPlayerIdx = game.getNextPlayer(1) - 1;
+        int nextPlayerIdx = GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getActualPlayer()-1);
         while (true) {
             Player player = game.getPlayers().get(nextPlayerIdx);
             AuctionOfferDto playerOffer = game.getAuctionDto().getOffersMap().get(player.getName());
-            if (playerOffer == null) {
+            if (playerOffer == null || !playerOffer.pass()) {
                 game.setActualPlayer(nextPlayerIdx + 1);
                 break;
             }
 
-            if (playerOffer.pass()) {
-                nextPlayerIdx = game.getNextPlayer(1) - 1;
-                continue;
-            }
-
-            game.setActualPlayer(nextPlayerIdx + 1);
-            break;
+            nextPlayerIdx = GameUtils.getNexPlayerIdx(game.getPlayersCount(), nextPlayerIdx);
         }
     }
 
@@ -104,6 +99,31 @@ public class GameLogicService {
     }
 
     public void checkBattle(Game game) {
-        //TODO
+        Map<Player, CardDto> stack = game.getStack();
+
+        Player actualPlayer = GameUtils.getPlayerByIndex(game, game.getNextPlayer(1));
+        CardSuit roundSuit = stack.get(actualPlayer).getSuit();
+        boolean superCardSuit = game.getSuperCardSuit() != null && checkStackContainsSuperCard(game.getSuperCardSuit(), stack);
+        Player winPlayer = stack.entrySet()
+                .stream()
+                .filter(c -> battleCardsFilter(c, roundSuit, superCardSuit, game.getSuperCardSuit()))
+                .max(Comparator.comparing(entry -> entry.getValue().getRank().getValue()))
+                .get()
+                .getKey();
+
+        winPlayer.addRoundCards(game.getStack().values());
+        game.setActualPlayer(winPlayer.getIndex());
+        game.clearStack();
+    }
+
+    private boolean battleCardsFilter(Map.Entry<Player, CardDto> c, CardSuit roundSuit, boolean superCardSuit, CardSuit cardSuit) {
+        return (!superCardSuit && c.getValue().getSuit() == roundSuit)
+                || (superCardSuit && c.getValue().getSuit() == cardSuit);
+    }
+
+    private boolean checkStackContainsSuperCard(CardSuit superCardSuit, Map<Player, CardDto> stack) {
+        return stack.entrySet()
+                .stream()
+                .anyMatch(es -> es.getValue().getSuit() == superCardSuit);
     }
 }

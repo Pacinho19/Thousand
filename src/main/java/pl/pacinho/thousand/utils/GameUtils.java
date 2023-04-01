@@ -25,10 +25,10 @@ public class GameUtils {
 
     public static boolean allPlayersHasTheSameCardsCount(Game game) {
         return game.getPlayers()
-                       .stream()
-                       .map(p -> p.getCards().size())
-                       .distinct()
-                       .count() == 1;
+                .stream()
+                .map(p -> p.getCards().size())
+                .distinct()
+                .count() == 1;
     }
 
     public static boolean checkPlayer(Game game, String name) {
@@ -39,5 +39,22 @@ public class GameUtils {
     public static boolean checkCard(List<CardDto> cards, CardDto cardDto) {
         return cards.stream()
                 .anyMatch(c -> c.equals(cardDto));
+    }
+
+    public static Player getActualPlayer(Game game) {
+        return game.getPlayers().get(
+                game.getActualPlayer() - 1
+        );
+    }
+
+    public static Player getPlayerByIndex(Game game, int number) {
+        return game.getPlayers()
+                .get(number - 1);
+    }
+
+    public static int getNexPlayerIdx(int playersCount, int actualIdx) {
+        if (actualIdx == playersCount - 1)
+            return 0;
+        return actualIdx + 1;
     }
 }
