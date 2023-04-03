@@ -53,7 +53,7 @@ public class GameDtoMapper {
     }
 
     private static int getPlayerRoundPoints(Game game, Integer playerIdx) {
-        if(playerIdx==null)
+        if (playerIdx == null)
             return 0;
 
         return GameUtils.calculatePlayerRoundPoints(
@@ -78,14 +78,10 @@ public class GameDtoMapper {
         return roundSummaryDto.getCards();
     }
 
-    private static Map<String, CardDto> getStack(Game game) {
-        return game.getStack()
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        e -> e.getKey().getName(),
-                        Map.Entry::getValue
-                ));
+    private static LinkedList<CardDto> getStack(Game game) {
+        return new LinkedList<>(
+                game.getStack().values()
+        );
     }
 
     private static MusikInfoDto getMusikInfo(Game game) {

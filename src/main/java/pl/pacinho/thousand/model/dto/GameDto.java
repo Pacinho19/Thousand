@@ -10,6 +10,7 @@ import pl.pacinho.thousand.utils.AuctionUtils;
 import pl.pacinho.thousand.utils.GameUtils;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class GameDto {
 
     private List<CardDto> cards;
     private List<CardDto> wonCards;
-    private Map<String, CardDto> stack;
+    private LinkedList<CardDto> stack;
     private MusikInfoDto musikInfoDto;
     private Map<Integer, PlayerInfo> playersInfo;
     private int playersCount;
