@@ -177,7 +177,7 @@ public class GameService {
 
     public void playerReady(String gameId, String name) {
         boolean nextRound = gameLogicService.playerReady(gameId, name);
-        simpMessagingTemplate.convertAndSend("/player-ready/" + gameId, new RoundReadyDto("Player " + name + "ready", nextRound));
+        simpMessagingTemplate.convertAndSend("/player-ready/" + gameId, new RoundReadyDto("Player " + name + " ready!", nextRound));
     }
 
     public boolean isReady(RoundResultDto roundResult, String name) {

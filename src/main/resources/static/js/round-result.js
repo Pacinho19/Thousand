@@ -19,7 +19,7 @@ function checkReadyResponse(result, gameId){
     }
 
     updateTable(gameId);
-    showPlayerReadyAlert(result.message);
+    showPlayerReadyAlert(obj.message);
 }
 
 function updateTable(gameId){
