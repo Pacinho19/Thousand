@@ -1,8 +1,10 @@
 package pl.pacinho.thousand.utils;
 
 import pl.pacinho.thousand.model.dto.CardDto;
+import pl.pacinho.thousand.model.dto.GameDto;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.entity.Player;
+import pl.pacinho.thousand.model.enums.CardSuit;
 
 import java.util.List;
 
@@ -25,10 +27,10 @@ public class GameUtils {
 
     public static boolean allPlayersHasTheSameCardsCount(Game game) {
         return game.getPlayers()
-                .stream()
-                .map(p -> p.getCards().size())
-                .distinct()
-                .count() == 1;
+                       .stream()
+                       .map(p -> p.getCards().size())
+                       .distinct()
+                       .count() == 1;
     }
 
     public static boolean checkPlayer(Game game, String name) {
@@ -62,4 +64,27 @@ public class GameUtils {
         return game.getPlayers().stream()
                 .allMatch(p -> p.getCards().isEmpty());
     }
+
+    public static boolean checkCanThrow(GameDto gameDto, CardDto cardDto) {
+        CardSuit roundSuit = gameDto.getRoundSuit();
+        if (roundSuit == null)
+            return true;
+
+        boolean hasRoundSuit = cardDto.getSuit() == roundSuit;
+        boolean nonExistsAnyCardWithRoundSuit = !existsAnyCardWithRoundSuit(gameDto.getCards(), roundSuit);
+        boolean nonExistsAnyCardWithSuperSuit = !existsAnyCardWithRoundSuit(gameDto.getCards(), gameDto.getSuperCardSuit());
+
+        return hasRoundSuit
+               || (nonExistsAnyCardWithRoundSuit && cardDto.getSuit() == gameDto.getSuperCardSuit())
+               || (nonExistsAnyCardWithRoundSuit && nonExistsAnyCardWithSuperSuit);
+    }
+
+    private static boolean existsAnyCardWithRoundSuit(List<CardDto> cards, CardSuit suit) {
+        if (suit == null)
+            return false;
+
+        return cards.stream()
+                .anyMatch(c -> c.getSuit() == suit);
+    }
+
 }

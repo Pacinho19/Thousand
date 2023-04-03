@@ -145,6 +145,9 @@ public class GameService {
 
         gameLogicService.checkSuperCardCheckIn(cardDto, game, player);
 
+        if(game.getStack().isEmpty())
+            game.setRoundSuit(cardDto.getSuit());
+
         game.addCardToStack(player, cardDto);
         player.getCards().remove(GameUtils.findCard(player.getCards(), cardDto));
 

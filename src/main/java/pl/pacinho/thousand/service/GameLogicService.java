@@ -116,6 +116,7 @@ public class GameLogicService {
         winPlayer.getRoundSummaryDto().addCards(game.getStack().values());
         game.setActualPlayer(winPlayer.getIndex());
         game.clearStack();
+        game.setRoundSuit(null);
     }
 
     private boolean battleCardsFilter(Map.Entry<Player, CardDto> c, CardSuit roundSuit, boolean superCardSuit, CardSuit cardSuit) {

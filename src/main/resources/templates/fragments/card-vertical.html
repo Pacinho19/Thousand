@@ -3,10 +3,13 @@
      th:styleappend="${cardDto!=null ? 'white' : '#1EB5DA'}"
      th:id="${cardDto!=null && !stack ? (cardDto.suit.name + '_' + cardDto.rank.name()) : 'hiddenCard'}">
 
-    <div th:if="${stack==false && cardDto!=null && game.actualPlayer==game.playerIndex && game.stage.name=='GAME_ON'}">
+    <div th:if="${stack==false && cardDto!=null && game.actualPlayer==game.playerIndex && game.stage.name=='GAME_ON' && game.canUse(cardDto)}">
         <a href="#" th:onclick="selectCard([[${cardDto}]])">
             <div th:replace="fragments/card-content :: cardContentFrag(cardDto=${cardDto})"/>
         </a>
+    </div>
+     <div th:if="${stack==false && cardDto!=null && game.actualPlayer==game.playerIndex && game.stage.name=='GAME_ON' && !game.canUse(cardDto)}">
+            <div th:replace="fragments/card-content :: cardContentFrag(cardDto=${cardDto})"/>
     </div>
      <div th:if="${stack==false && cardDto!=null && game.actualPlayer==game.playerIndex && game.stage.name=='END_AUCTION'}">
         <a href="#" th:onclick="giveCardToPlayer([[${cardDto}]], [[${game.playersInfo}]])">

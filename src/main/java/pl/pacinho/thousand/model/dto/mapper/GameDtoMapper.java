@@ -42,6 +42,7 @@ public class GameDtoMapper {
                 .maxAuctionValue(AuctionUtils.getPlayerCardsValue(game, name))
                 .stack(getStack(game))
                 .superCardSuit(game.getSuperCardSuit())
+                .roundSuit(game.getRoundSuit())
                 .build();
     }
 
@@ -87,7 +88,7 @@ public class GameDtoMapper {
         return players.stream()
                 .collect(Collectors.toMap(
                         Player::getIndex,
-                        p -> new PlayerInfo(p.getName(), p.getCards().size())
+                        p -> new PlayerInfo(p.getName(), p.getCards().size(), p.getPoints())
                 ));
     }
 

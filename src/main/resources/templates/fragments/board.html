@@ -3,9 +3,24 @@
     <input type="hidden" id="gameId" th:value="${game.id}">
 
     <div class="row" style="margin-top:1%; height: 90vh;width: 100vw;">
-        <div class="col-md-1">
+        <div class="col-md-2">
+
+            <table style="margin-top:1%;margin:auto;width:90%" class="table table-bordered">
+                <tbody>
+                <tr  th:each="playerInfo : ${game.playersInfo}">
+                    <td style="vertical-align: middle;">
+                        <span th:text="${playerInfo.value.name}"> </span>
+                    </td>
+                    <td style="vertical-align: middle;">
+                        <span th:text="${playerInfo.value.points}"> </span>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
         </div>
-        <div class="col-md-10" style="text-align:center;height:100%;width:100%">
+        <div class="col-md-8" style="text-align:center;height:100%;width:100%">
             <div class="row"
                  style="height:100%;width:100%;background-color:green;border: black solid 3px;margin:0 auto;">
                 <div class="col-md-2">
@@ -81,7 +96,8 @@
                                     <h5 style="text-align:center;margin: 0 0"
                                         th:if="${game.superCardSuit!=null}"> / Super Card</h5>
 
-                                    <i th:if="${game.superCardSuit!=null}" th:class="${game.superCardSuit.iconClassName}"
+                                    <i th:if="${game.superCardSuit!=null}"
+                                       th:class="${game.superCardSuit.iconClassName}"
                                        th:style="${'margin-left:1%;text-align:center;font-size:1.1vw;color:' + game.superCardSuit.color.hex}"></i>
                                 </div>
                                 <th:block th:if="${game.stage.name=='GAME_ON'}">
@@ -180,7 +196,7 @@
             </div>
 
         </div>
-        <div class="col-md-1">
+        <div class="col-md-2">
         </div>
     </div>
 </div>

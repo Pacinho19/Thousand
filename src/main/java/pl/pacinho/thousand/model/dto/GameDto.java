@@ -7,6 +7,7 @@ import pl.pacinho.thousand.model.enums.CardSuit;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.utils.AuctionUtils;
+import pl.pacinho.thousand.utils.GameUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,11 +39,16 @@ public class GameDto {
     private int maxAuctionValue;
     private int roundPoints;
     private CardSuit superCardSuit;
+    private CardSuit roundSuit;
 
     public int getNextPlayer(int offset) {
         int idx = playerIndex + offset;
         if (idx > playersCount) return idx - playersCount;
         return idx;
+    }
+
+    public boolean canUse(CardDto cardDto){
+        return GameUtils.checkCanThrow(this, cardDto);
     }
 
 }

@@ -1,5 +1,5 @@
 package pl.pacinho.thousand.model.dto;
 
 
-public record PlayerInfo(String name, Integer cardsCount) {
+public record PlayerInfo(String name, Integer cardsCount, Integer points) {
 }

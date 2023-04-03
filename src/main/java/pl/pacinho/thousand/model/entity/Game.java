@@ -39,6 +39,9 @@ public class Game {
     private int roundPoints;
     @Setter
     private CardSuit superCardSuit;
+    @Setter
+    private CardSuit roundSuit;
+
 
     public Game(String player1, int playersCount) {
         this.playersCount = playersCount;
