@@ -10,6 +10,10 @@ public class UIConfig {
     public static final String GAME_BOARD = GAME_PAGE + "/board";
     public static final String GAME_BOARD_RELOAD = GAME_BOARD + "/reload";
     public static final String GAME_MOVE = GAME_PAGE + "/move";
+    public static final String GAME_ROUND = GAME_PAGE + "/round";
+    public static final String GAME_ROUND_SUMMARY = GAME_ROUND + "/summary";
+    public static final String GAME_ROUND_SUMMARY_RELOAD = GAME_ROUND_SUMMARY + "/reload";
+    public static final String GAME_ROUND_READY = GAME_ROUND + "/ready";
     public static final String GAME_BOMB = GAME_PAGE + "/bomb";
     public static final String GAME_OVER = GAME_PAGE + "/over";
     public static final String GAME_AUCTION = GAME_PAGE + "/auction";
@@ -17,6 +21,5 @@ public class UIConfig {
     public static final String GAME_AUCTION_PASS = GAME_AUCTION + "/pass";
     public static final String GAME_AUCTION_GIVE_CARD = GAME_AUCTION + "/give-card";
     public static final String GAME_AUCTION_CONFIRMATION_POINTS = GAME_AUCTION + "/confirmation-points";
-
 
 }

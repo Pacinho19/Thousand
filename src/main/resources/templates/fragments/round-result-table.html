@@ -1,0 +1,41 @@
+<div th:fragment="roundResultTable" id="roundResultTable" xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <table style="margin-top:1%;" class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Player</th>
+            <th>Points</th>
+            <th>Bomb</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="playerResult : ${roundResult.playersResult}">
+            <td>
+                <span th:text="${playerResult.name}"></span>
+                <i th:if="${!playerResult.ready}" class="bi bi-alarm"
+                   style="font-size:1rem;color:red"></i>
+                <i th:if="${playerResult.ready}" class="bi bi-check-circle"
+                   style="font-size:1rem;color:green"></i>
+            </td>
+            <td >
+                <span th:text="${playerResult.points}"></span>
+            </td>
+            <td>
+                <i th:if="${playerResult.bomb}" class="fa-solid fa-bomb" style="color:red;"></i>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="text-align:center;width:100%">
+        <form method="post"
+              th:action="@{'/thousand/games/'+${gameId}+'/round/ready'}"
+              th:if="${readyBtn}">
+            <button class="btn btn-primary" type="submit" style="width:60%">Ready</button>
+        </form>
+
+        <h3 th:if="${!readyBtn}">Waiting for other players!</h3>
+    </div>
+
+
+</div>

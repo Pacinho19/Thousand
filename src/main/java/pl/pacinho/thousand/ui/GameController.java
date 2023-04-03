@@ -8,15 +8,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.pacinho.thousand.config.UIConfig;
-import pl.pacinho.thousand.model.dto.AuctionOfferDto;
 import pl.pacinho.thousand.model.dto.CardDto;
 import pl.pacinho.thousand.model.dto.GameDto;
 import pl.pacinho.thousand.model.dto.GiveCardRequestDto;
+import pl.pacinho.thousand.model.dto.RoundResultDto;
+import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.service.GameService;
-
-import javax.websocket.server.PathParam;
-import java.util.LinkedList;
 
 @RequiredArgsConstructor
 @Controller
@@ -49,6 +47,8 @@ public class GameController {
     public String gameRoom(@PathVariable(value = "gameId") String gameId, Model model, Authentication authentication) {
         try {
             GameDto game = gameService.findDtoById(gameId, authentication.getName());
+            if (game.getStage() == GameStage.ROUND_OVER)
+                return "redirect:" + UIConfig.GAMES + "/" + gameId + "/round/summary";
             if (game.getStatus() == GameStatus.IN_PROGRESS)
                 return "redirect:" + UIConfig.GAMES + "/" + gameId;
             if (game.getStatus() == GameStatus.FINISHED)
@@ -144,6 +144,39 @@ public class GameController {
         gameService.bomb(authentication.getName(), gameId);
     }
 
+    @GetMapping(UIConfig.GAME_ROUND_SUMMARY)
+    public String roundSummary(Model model,
+                               Authentication authentication,
+                               @PathVariable(value = "gameId") String gameId) {
+        RoundResultDto roundResult = gameService.getRoundResult(gameId);
+        if (roundResult == null)
+            return "redirect:" + UIConfig.GAMES + "/" + gameId;
+
+        model.addAttribute("gameId", gameId);
+        model.addAttribute("roundResult", roundResult);
+        model.addAttribute("readyBtn", !gameService.isReady(roundResult, authentication.getName()));
+        return "round-result";
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping(UIConfig.GAME_ROUND_READY)
+    public void roundReady(@PathVariable(value = "gameId") String gameId, Authentication authentication) {
+        gameService.playerReady(gameId, authentication.getName());
+    }
+
+    @GetMapping(UIConfig.GAME_ROUND_SUMMARY_RELOAD)
+    public String reloadRoundResult(Model model,
+                                    Authentication authentication,
+                                    @PathVariable(value = "gameId") String gameId) {
+        RoundResultDto roundResult = gameService.getRoundResult(gameId);
+        if (roundResult == null)
+            return "redirect:" + UIConfig.GAMES + "/" + gameId;
+
+        model.addAttribute("gameId", gameId);
+        model.addAttribute("roundResult", roundResult);
+        model.addAttribute("readyBtn", !gameService.isReady(roundResult, authentication.getName()));
+        return "fragments/round-result-table :: roundResultTable";
+    }
 
 
 }

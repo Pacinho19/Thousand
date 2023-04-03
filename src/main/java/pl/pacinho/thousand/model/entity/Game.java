@@ -5,6 +5,7 @@ import lombok.Setter;
 import pl.pacinho.thousand.model.dto.AuctionDto;
 import pl.pacinho.thousand.model.dto.AuctionSummaryDto;
 import pl.pacinho.thousand.model.dto.CardDto;
+import pl.pacinho.thousand.model.dto.RoundResultDto;
 import pl.pacinho.thousand.model.enums.CardSuit;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
@@ -41,7 +42,8 @@ public class Game {
     private CardSuit superCardSuit;
     @Setter
     private CardSuit roundSuit;
-
+    @Setter
+    private RoundResultDto roundResult;
 
     public Game(String player1, int playersCount) {
         this.playersCount = playersCount;

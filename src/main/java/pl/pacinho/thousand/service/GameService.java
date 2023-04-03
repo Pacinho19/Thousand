@@ -4,14 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import pl.pacinho.thousand.model.dto.AuctionOfferDto;
-import pl.pacinho.thousand.model.dto.CardDto;
-import pl.pacinho.thousand.model.dto.GameDto;
-import pl.pacinho.thousand.model.dto.GiveCardRequestDto;
+import pl.pacinho.thousand.model.dto.*;
 import pl.pacinho.thousand.model.dto.mapper.GameDtoMapper;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.entity.Player;
-import pl.pacinho.thousand.model.enums.CardRank;
 import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.repository.GameRepository;
@@ -156,7 +152,11 @@ public class GameService {
         else
             game.setActualPlayer(game.getNextPlayer(1));
 
-        gameLogicService.checkEndOfRound(game);
+        boolean end = gameLogicService.checkEndOfRound(game);
+        if (end) {
+            simpMessagingTemplate.convertAndSend("/round-over/" + game.getId(), true);
+            return;
+        }
         simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
     }
 
@@ -167,7 +167,23 @@ public class GameService {
 
         Player player = GameUtils.getPlayer(game, name);
         gameLogicService.bomb(game, player);
-        simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
+        simpMessagingTemplate.convertAndSend("/round-over/" + game.getId(), true);
+    }
 
+    public RoundResultDto getRoundResult(String gameId) {
+        Game game = gameLogicService.findById(gameId);
+        return game.getRoundResult();
+    }
+
+    public void playerReady(String gameId, String name) {
+        boolean nextRound = gameLogicService.playerReady(gameId, name);
+        simpMessagingTemplate.convertAndSend("/player-ready/" + gameId, new RoundReadyDto("Player " + name + "ready", nextRound));
+    }
+
+    public boolean isReady(RoundResultDto roundResult, String name) {
+        return roundResult.getPlayersResult()
+                .stream()
+                .filter(pr -> pr.getName().equals(name))
+                .allMatch(PlayerRoundResultDto::isReady);
     }
 }

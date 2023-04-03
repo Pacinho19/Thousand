@@ -2,6 +2,7 @@ package pl.pacinho.thousand.utils;
 
 import pl.pacinho.thousand.model.dto.CardDto;
 import pl.pacinho.thousand.model.dto.GameDto;
+import pl.pacinho.thousand.model.dto.PlayerRoundResultDto;
 import pl.pacinho.thousand.model.dto.RoundSummaryDto;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.entity.Player;
@@ -28,10 +29,10 @@ public class GameUtils {
 
     public static boolean allPlayersHasTheSameCardsCount(Game game) {
         return game.getPlayers()
-                       .stream()
-                       .map(p -> p.getCards().size())
-                       .distinct()
-                       .count() == 1;
+                .stream()
+                .map(p -> p.getCards().size())
+                .distinct()
+                .count() == 1;
     }
 
     public static boolean checkPlayer(Game game, String name) {
@@ -76,8 +77,8 @@ public class GameUtils {
         boolean nonExistsAnyCardWithSuperSuit = !existsAnyCardWithRoundSuit(gameDto.getCards(), gameDto.getSuperCardSuit());
 
         return hasRoundSuit
-               || (nonExistsAnyCardWithRoundSuit && cardDto.getSuit() == gameDto.getSuperCardSuit())
-               || (nonExistsAnyCardWithRoundSuit && nonExistsAnyCardWithSuperSuit);
+                || (nonExistsAnyCardWithRoundSuit && cardDto.getSuit() == gameDto.getSuperCardSuit())
+                || (nonExistsAnyCardWithRoundSuit && nonExistsAnyCardWithSuperSuit);
     }
 
     private static boolean existsAnyCardWithRoundSuit(List<CardDto> cards, CardSuit suit) {
@@ -89,11 +90,17 @@ public class GameUtils {
     }
 
     public static int calculatePlayerRoundPoints(RoundSummaryDto roundSummary) {
-        if(roundSummary==null)
+        if (roundSummary == null)
             return 0;
 
         return roundSummary.getCards().stream()
                 .map(c -> c.getRank().getValue())
                 .reduce(roundSummary.getCheckInValue(), Integer::sum);
+    }
+
+    public static boolean checkAllPlayersReady(Game game) {
+        return game.getRoundResult().getPlayersResult()
+                .stream()
+                .allMatch(PlayerRoundResultDto::isReady);
     }
 }

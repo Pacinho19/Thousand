@@ -12,8 +12,16 @@ privateStompClient.connect({}, function (frame) {
     privateStompClient.subscribe('/users/reload-board/' + gameId, function (result) {
         slideCard(JSON.parse(result.body));
     });
+
+    privateStompClient.subscribe('/round-over/' + gameId, function (result) {
+        roundOver();
+    });
 });
 stompClient = Stomp.over(socket);
+
+function roundOver() {
+    window.location.href = '/thousand/games/' + document.getElementById("gameId").value + '/round/summary';
+}
 
 function updateBoard() {
     var xhr = new XMLHttpRequest();

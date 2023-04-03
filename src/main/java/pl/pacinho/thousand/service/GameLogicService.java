@@ -122,7 +122,7 @@ public class GameLogicService {
 
     private boolean battleCardsFilter(Map.Entry<Player, CardDto> c, CardSuit roundSuit, boolean superCardSuit, CardSuit cardSuit) {
         return (!superCardSuit && c.getValue().getSuit() == roundSuit)
-               || (superCardSuit && c.getValue().getSuit() == cardSuit);
+                || (superCardSuit && c.getValue().getSuit() == cardSuit);
     }
 
     private boolean checkStackContainsSuperCard(CardSuit superCardSuit, Map<Player, CardDto> stack) {
@@ -148,17 +148,23 @@ public class GameLogicService {
     private boolean checkCardPair(CardDto card, List<CardDto> cards) {
         return cards.stream()
                 .anyMatch(c -> c.getSuit() == card.getSuit()
-                               && c.getRank() == card.getRank().getPair());
+                        && c.getRank() == card.getRank().getPair());
     }
 
-    public void checkEndOfRound(Game game) {
+    public boolean checkEndOfRound(Game game) {
         if (!GameUtils.allPlayersHasNoCards(game))
-            return;
+            return false;
 
+        RoundResultDto roundResult = new RoundResultDto("Round over!");
         game.getPlayers()
-                .forEach(p -> calculatePoints(game.getAuctionSummary(), p, game.getRoundPoints()));
+                .forEach(p -> {
+                    int points = calculatePoints(game.getAuctionSummary(), p, game.getRoundPoints());
+                    roundResult.addPlayerResult(new PlayerRoundResultDto(p.getName(), points, false));
+                });
 
-        nextRound(game);
+        game.setStage(GameStage.ROUND_OVER);
+        game.setRoundResult(roundResult);
+        return true;
     }
 
     private void nextRound(Game game) {
@@ -171,34 +177,55 @@ public class GameLogicService {
         dealTheCards(game);
     }
 
-    private void calculatePoints(AuctionSummaryDto auctionSummary, Player p, int roundPoints) {
+    private int calculatePoints(AuctionSummaryDto auctionSummary, Player p, int roundPoints) {
         int points = GameUtils.calculatePlayerRoundPoints(p.getRoundSummaryDto());
-        if (auctionSummary.playerName().equals(p.getName()))
-            p.addPoints(points >= roundPoints ? roundPoints : roundPoints * -1, true);
-        else
-            p.addPoints(NumberUtils.roundToNearest10(points), false);
+        int outputPoints;
+        if (auctionSummary.playerName().equals(p.getName())) {
+            outputPoints = points >= roundPoints ? roundPoints : roundPoints * -1;
+            p.addPoints(outputPoints, true);
+        } else {
+            outputPoints = NumberUtils.roundToNearest10(points);
+            p.addPoints(outputPoints, false);
+        }
 
         p.getCards().clear();
         p.setRoundSummaryDto(new RoundSummaryDto());
         p.setAuctionOffer(null);
+
+        return outputPoints;
     }
 
 
     public void bomb(Game game, Player player) {
+        RoundResultDto roundResult = new RoundResultDto(player.getName() + " used a bomb!");
         if (!player.isBomb()) {
             player.setBomb(true);
-            nextRound(game);
-            return;
+            addingPlayerEmptyResults(game, roundResult, player);
+        } else {
+            game.getPlayers()
+                    .forEach(p -> {
+                        if (p.getName().equals(player.getName())) {
+                            int points = -1 * getPointsToSubtractAfterBomb(game);
+                            p.addPoints(points, true);
+                            roundResult.addPlayerResult(
+                                    new PlayerRoundResultDto(p.getName(), points, true));
+                        } else {
+                            p.addPoints(60, false);
+                            roundResult.addPlayerResult(
+                                    new PlayerRoundResultDto(p.getName(), 60, false));
+                        }
+                    });
         }
 
+        game.setStage(GameStage.ROUND_OVER);
+        game.setRoundResult(roundResult);
+    }
+
+    private void addingPlayerEmptyResults(Game game, RoundResultDto roundResult, Player bombPlayer) {
         game.getPlayers()
-                .forEach(p -> {
-                    if (p.getName().equals(player.getName()))
-                        p.addPoints(-1 * getPointsToSubtractAfterBomb(game), true);
-                    else
-                        p.addPoints(60, false);
-                });
-        nextRound(game);
+                .forEach(p -> roundResult.addPlayerResult(
+                        new PlayerRoundResultDto(p.getName(), 0, bombPlayer.getName().equals(p.getName())))
+                );
     }
 
     private int getPointsToSubtractAfterBomb(Game game) {
@@ -207,4 +234,19 @@ public class GameLogicService {
 
         return game.getAuctionSummary().value();
     }
+
+    public boolean playerReady(String gameId, String name) {
+        Game game = findById(gameId);
+        game.getRoundResult().getPlayersResult()
+                .stream()
+                .filter(pr -> pr.getName().equals(name))
+                .forEach(pr -> pr.setReady(true));
+
+        if (GameUtils.checkAllPlayersReady(game)) {
+            nextRound(game);
+            return true;
+        }
+        return false;
+    }
+
 }
