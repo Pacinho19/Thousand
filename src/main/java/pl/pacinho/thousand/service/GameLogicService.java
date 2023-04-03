@@ -54,8 +54,8 @@ public class GameLogicService {
     }
 
     private static void setAuction(Game game) {
-        AuctionDto auctionDto = new AuctionDto(100, game.getRoundPlayer());
-        auctionDto.addOffer(game.getPlayers().get(game.getRoundPlayer()).getName(), new AuctionOfferDto(100, false));
+        AuctionDto auctionDto = new AuctionDto(100, GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getRoundPlayer()-1)+1);
+        auctionDto.addOffer(game.getPlayers().get(auctionDto.getCurrentPLayer()-1).getName(), new AuctionOfferDto(100, false));
         game.setActualPlayer(game.getNextPlayer(2));
         game.setAuctionDto(auctionDto);
     }
@@ -158,10 +158,10 @@ public class GameLogicService {
         game.getPlayers()
                 .forEach(p -> calculatePoints(game.getAuctionSummary(), p, game.getRoundPoints()));
 
-        int nextPlayer = GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getRoundPlayer());
+        int nextPlayer = GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getRoundPlayer()-1);
         game.setRoundPoints(0);
         game.setSuperCardSuit(null);
-        game.setRoundPlayer(nextPlayer);
+        game.setRoundPlayer(nextPlayer+1);
         game.setActualPlayer(nextPlayer + 1);
 
         dealTheCards(game);

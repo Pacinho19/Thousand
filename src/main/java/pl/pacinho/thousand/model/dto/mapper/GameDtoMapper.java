@@ -74,6 +74,7 @@ public class GameDtoMapper {
         if (roundSummaryDto == null)
             return Collections.emptyList();
 
+        roundSummaryDto.getCards().sort(Comparator.comparing(CardDto::getSuit).thenComparing(c -> c.getRank().getValue()));
         return roundSummaryDto.getCards();
     }
 
