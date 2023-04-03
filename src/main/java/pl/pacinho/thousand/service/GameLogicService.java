@@ -175,7 +175,7 @@ public class GameLogicService {
             p.addPoints(NumberUtils.roundToNearest10(points));
 
         p.getCards().clear();
-        p.setRoundSummaryDto(null);
+        p.setRoundSummaryDto(new RoundSummaryDto());
         p.setAuctionOffer(null);
     }
 
