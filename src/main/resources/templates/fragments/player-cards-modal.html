@@ -1,0 +1,28 @@
+<!-- Modal -->
+<div id="playerCardsModalFrag" th:fragment="playerCardsModalFrag" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">My cards</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="height:25vh">
+        <div id="playerCardsDiv" class="row"
+             style="width:90%;height:90%;margin:auto;display: flex;justify-content: center;align-items: center;">
+          <th:block th:each="cardDto : ${game.wonCards}">
+            <div
+                    th:replace="fragments/card-vertical :: cardFrag(game=${game}, cardDto=${cardDto}, stack=true)"/>
+          </th:block>
+
+        </div>
+        <div class="row"
+             style="width:90%;height:10%;margin:auto;display: flex;justify-content: center;align-items: center;">
+          <h3 th:text="${'Summary points: ' + game.playerRoundPoints}"></h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

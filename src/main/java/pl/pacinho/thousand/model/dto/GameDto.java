@@ -25,6 +25,7 @@ public class GameDto {
     private LocalDateTime startTime;
 
     private List<CardDto> cards;
+    private List<CardDto> wonCards;
     private Map<String, CardDto> stack;
     private MusikInfoDto musikInfoDto;
     private Map<Integer, PlayerInfo> playersInfo;
@@ -40,6 +41,7 @@ public class GameDto {
     private int roundPoints;
     private CardSuit superCardSuit;
     private CardSuit roundSuit;
+    private int playerRoundPoints;
 
     public int getNextPlayer(int offset) {
         int idx = playerIndex + offset;

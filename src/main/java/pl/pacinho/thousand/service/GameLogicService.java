@@ -68,6 +68,7 @@ public class GameLogicService {
     }
 
     private void drawMusik(Game game, List<CardDto> cards) {
+        game.getMusik().clear();
         IntStream.rangeClosed(1, 3)
                 .forEach(i -> {
                     CardDto cardDto = cards.get(0);
@@ -167,7 +168,7 @@ public class GameLogicService {
     }
 
     private void calculatePoints(AuctionSummaryDto auctionSummary, Player p, int roundPoints) {
-        int points = calculatePlayerRoundPoints(p.getRoundSummaryDto());
+        int points = GameUtils.calculatePlayerRoundPoints(p.getRoundSummaryDto());
         if (auctionSummary.playerName().equals(p.getName()))
             p.addPoints(points >= roundPoints ? roundPoints : roundPoints * -1);
         else
@@ -178,9 +179,5 @@ public class GameLogicService {
         p.setAuctionOffer(null);
     }
 
-    private int calculatePlayerRoundPoints(RoundSummaryDto roundSummary) {
-        return roundSummary.getCards().stream()
-                .map(c -> c.getRank().getValue())
-                .reduce(roundSummary.getCheckInValue(), Integer::sum);
-    }
+
 }

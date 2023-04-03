@@ -1,12 +1,11 @@
 package pl.pacinho.thousand.model.dto.mapper;
 
-import pl.pacinho.thousand.model.dto.CardDto;
-import pl.pacinho.thousand.model.dto.GameDto;
-import pl.pacinho.thousand.model.dto.PlayerInfo;
-import pl.pacinho.thousand.model.dto.MusikInfoDto;
+import pl.pacinho.thousand.model.dto.*;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.entity.Player;
+import pl.pacinho.thousand.model.enums.GameStage;
 import pl.pacinho.thousand.utils.AuctionUtils;
+import pl.pacinho.thousand.utils.GameUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
 public class GameDtoMapper {
 
     public static GameDto parse(Game game, String name) {
+        Integer playerIndex = getPlayerIndex(game.getPlayers(), name);
         return GameDto.builder()
                 .id(game.getId())
                 .startTime(game.getStartTime())
@@ -23,12 +23,15 @@ public class GameDtoMapper {
                 .cards(
                         getCards(game.getPlayers(), name)
                 )
+                .wonCards(
+                        getWonCards(name, game)
+                )
                 .playersCount(game.getPlayersCount())
                 .playersInfo(
                         getPlayersInfo(game.getPlayers())
                 )
                 .playerIndex(
-                        getPlayerIndex(game.getPlayers(), name)
+                        playerIndex
                 )
                 .actualPlayer(game.getActualPlayer())
                 .musikInfoDto(
@@ -43,7 +46,35 @@ public class GameDtoMapper {
                 .stack(getStack(game))
                 .superCardSuit(game.getSuperCardSuit())
                 .roundSuit(game.getRoundSuit())
+                .playerRoundPoints(
+                        getPlayerRoundPoints(game, playerIndex)
+                )
                 .build();
+    }
+
+    private static int getPlayerRoundPoints(Game game, Integer playerIdx) {
+        if(playerIdx==null)
+            return 0;
+
+        return GameUtils.calculatePlayerRoundPoints(
+                game.getPlayers().get(playerIdx - 1).getRoundSummaryDto()
+        );
+    }
+
+    private static List<CardDto> getWonCards(String name, Game game) {
+        if (game.getStage() != GameStage.GAME_ON)
+            return Collections.emptyList();
+
+        RoundSummaryDto roundSummaryDto = game.getPlayers().stream()
+                .filter(p -> p.getName().equals(name))
+                .findFirst()
+                .get()
+                .getRoundSummaryDto();
+
+        if (roundSummaryDto == null)
+            return Collections.emptyList();
+
+        return roundSummaryDto.getCards();
     }
 
     private static Map<String, CardDto> getStack(Game game) {

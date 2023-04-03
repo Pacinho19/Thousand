@@ -2,6 +2,7 @@ package pl.pacinho.thousand.utils;
 
 import pl.pacinho.thousand.model.dto.CardDto;
 import pl.pacinho.thousand.model.dto.GameDto;
+import pl.pacinho.thousand.model.dto.RoundSummaryDto;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.entity.Player;
 import pl.pacinho.thousand.model.enums.CardSuit;
@@ -87,4 +88,12 @@ public class GameUtils {
                 .anyMatch(c -> c.getSuit() == suit);
     }
 
+    public static int calculatePlayerRoundPoints(RoundSummaryDto roundSummary) {
+        if(roundSummary==null)
+            return 0;
+
+        return roundSummary.getCards().stream()
+                .map(c -> c.getRank().getValue())
+                .reduce(roundSummary.getCheckInValue(), Integer::sum);
+    }
 }
