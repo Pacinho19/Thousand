@@ -9,7 +9,8 @@
                 <tbody>
                 <tr  th:each="playerInfo : ${game.playersInfo}">
                     <td style="vertical-align: middle;">
-                        <span th:text="${playerInfo.value.name}"> </span>
+                        <span th:text="${playerInfo.value.name}"></span>
+                        <i th:if="${playerInfo.value.bombUsed}" class="fa-solid fa-bomb" style="color:red;"></i>
                     </td>
                     <td style="vertical-align: middle;">
                         <span th:text="${playerInfo.value.points}"> </span>
@@ -106,6 +107,7 @@
                                         <th:block th:each="cardDto : ${game.stack}">
                                             <div th:replace="fragments/card-vertical :: cardFrag(game=null, cardDto=${cardDto}, stack=true)"/>
                                         </th:block>
+
                                     </div>
                                 </th:block>
                                 <th:block th:if="${game.musikInfoDto!=null}">
@@ -117,6 +119,10 @@
                                                 <div
                                                         th:replace="fragments/card-vertical :: cardFrag(game=null, cardDto=${cardDto}, stack=true)"/>
                                             </th:block>
+
+                                            <a onclick="bomb()" href="#"
+                                               th:if="${game.actualPlayer==game.playerIndex}"
+                                               class="fa-solid fa-bomb" th:style="${'font-size:4vw;margin-left:3%;color:' + (game.bombUsed ? 'red' : 'blue')} "></a>
                                         </div>
 
                                     </th:block>

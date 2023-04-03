@@ -49,7 +49,18 @@ public class GameDtoMapper {
                 .playerRoundPoints(
                         getPlayerRoundPoints(game, playerIndex)
                 )
+                .bombUsed(
+                        getBombUsed(game, playerIndex)
+                )
                 .build();
+    }
+
+    private static boolean getBombUsed(Game game, Integer playerIdx) {
+        if (playerIdx == null)
+            return false;
+
+        return game.getPlayers().get(playerIdx-1)
+                .isBomb();
     }
 
     private static int getPlayerRoundPoints(Game game, Integer playerIdx) {
@@ -116,7 +127,7 @@ public class GameDtoMapper {
         return players.stream()
                 .collect(Collectors.toMap(
                         Player::getIndex,
-                        p -> new PlayerInfo(p.getName(), p.getCards().size(), p.getPoints())
+                        p -> new PlayerInfo(p.getName(), p.getCards().size(), p.getPoints(), p.isBomb())
                 ));
     }
 

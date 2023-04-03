@@ -145,7 +145,7 @@ public class GameService {
 
         gameLogicService.checkSuperCardCheckIn(cardDto, game, player);
 
-        if(game.getStack().isEmpty())
+        if (game.getStack().isEmpty())
             game.setRoundSuit(cardDto.getSuit());
 
         game.addCardToStack(player, cardDto);
@@ -158,5 +158,16 @@ public class GameService {
 
         gameLogicService.checkEndOfRound(game);
         simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
+    }
+
+    public void bomb(String name, String gameId) {
+        Game game = gameLogicService.findById(gameId);
+        if (!GameUtils.checkPlayer(game, name))
+            return; //TODO MESSAGE
+
+        Player player = GameUtils.getPlayer(game, name);
+        gameLogicService.bomb(game, player);
+        simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), true);
+
     }
 }

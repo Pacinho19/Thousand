@@ -137,5 +137,13 @@ public class GameController {
         gameService.move(authentication.getName(), gameId, cardDto);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping(UIConfig.GAME_BOMB)
+    public void bomb(Authentication authentication,
+                     @PathVariable(value = "gameId") String gameId) {
+        gameService.bomb(authentication.getName(), gameId);
+    }
+
+
 
 }

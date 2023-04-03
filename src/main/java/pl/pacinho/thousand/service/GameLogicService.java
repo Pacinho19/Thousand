@@ -54,8 +54,8 @@ public class GameLogicService {
     }
 
     private static void setAuction(Game game) {
-        AuctionDto auctionDto = new AuctionDto(100, GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getRoundPlayer()-1)+1);
-        auctionDto.addOffer(game.getPlayers().get(auctionDto.getCurrentPLayer()-1).getName(), new AuctionOfferDto(100, false));
+        AuctionDto auctionDto = new AuctionDto(100, GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getRoundPlayer() - 1) + 1);
+        auctionDto.addOffer(game.getPlayers().get(auctionDto.getCurrentPLayer() - 1).getName(), new AuctionOfferDto(100, false));
         game.setActualPlayer(game.getNextPlayer(2));
         game.setAuctionDto(auctionDto);
     }
@@ -122,7 +122,7 @@ public class GameLogicService {
 
     private boolean battleCardsFilter(Map.Entry<Player, CardDto> c, CardSuit roundSuit, boolean superCardSuit, CardSuit cardSuit) {
         return (!superCardSuit && c.getValue().getSuit() == roundSuit)
-                || (superCardSuit && c.getValue().getSuit() == cardSuit);
+               || (superCardSuit && c.getValue().getSuit() == cardSuit);
     }
 
     private boolean checkStackContainsSuperCard(CardSuit superCardSuit, Map<Player, CardDto> stack) {
@@ -148,7 +148,7 @@ public class GameLogicService {
     private boolean checkCardPair(CardDto card, List<CardDto> cards) {
         return cards.stream()
                 .anyMatch(c -> c.getSuit() == card.getSuit()
-                        && c.getRank() == card.getRank().getPair());
+                               && c.getRank() == card.getRank().getPair());
     }
 
     public void checkEndOfRound(Game game) {
@@ -158,10 +158,14 @@ public class GameLogicService {
         game.getPlayers()
                 .forEach(p -> calculatePoints(game.getAuctionSummary(), p, game.getRoundPoints()));
 
-        int nextPlayer = GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getRoundPlayer()-1);
+        nextRound(game);
+    }
+
+    private void nextRound(Game game) {
+        int nextPlayer = GameUtils.getNexPlayerIdx(game.getPlayersCount(), game.getRoundPlayer() - 1);
         game.setRoundPoints(0);
         game.setSuperCardSuit(null);
-        game.setRoundPlayer(nextPlayer+1);
+        game.setRoundPlayer(nextPlayer + 1);
         game.setActualPlayer(nextPlayer + 1);
 
         dealTheCards(game);
@@ -180,4 +184,26 @@ public class GameLogicService {
     }
 
 
+    public void bomb(Game game, Player player) {
+        if (!player.isBomb()) {
+            player.setBomb(true);
+            nextRound(game);
+            return;
+        }
+
+        game.getPlayers()
+                .forEach(p -> {
+                    if (p.getName().equals(player.getName()))
+                        p.addPoints(-1 * getPointsToSubtractAfterBomb(game));
+                    else
+                        p.addPoints(60);
+                });
+    }
+
+    private int getPointsToSubtractAfterBomb(Game game) {
+        if (game.getAuctionSummary() == null && game.getAuctionSummary().value() == 100)
+            return 100;
+
+        return game.getAuctionSummary().value();
+    }
 }

@@ -43,6 +43,7 @@ public class GameDto {
     private CardSuit superCardSuit;
     private CardSuit roundSuit;
     private int playerRoundPoints;
+    private boolean bombUsed;
 
     public int getNextPlayer(int offset) {
         int idx = playerIndex + offset;

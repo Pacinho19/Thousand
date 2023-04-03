@@ -19,6 +19,8 @@ public class Player {
     private AuctionOfferDto auctionOffer;
     @Setter
     private RoundSummaryDto roundSummaryDto;
+    @Setter
+    private boolean bomb;
 
     public Player(String name, int index) {
         this.name = name;
@@ -26,6 +28,7 @@ public class Player {
         this.points = 0;
         this.cards = Collections.emptyList();
         this.roundSummaryDto = new RoundSummaryDto();
+        this.bomb=false;
     }
 
     public void addPoints(int points) {
