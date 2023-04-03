@@ -119,7 +119,7 @@ function selectCard(cardDto) {
 
 function bomb() {
     var xhr = new XMLHttpRequest();
-    v   var url = '/thousand/games/' + document.getElementById("gameId").value + '/bomb';
+    var url = '/thousand/games/' + document.getElementById("gameId").value + '/bomb';
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () { };

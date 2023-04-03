@@ -198,6 +198,7 @@ public class GameLogicService {
                     else
                         p.addPoints(60);
                 });
+        nextRound(game);
     }
 
     private int getPointsToSubtractAfterBomb(Game game) {

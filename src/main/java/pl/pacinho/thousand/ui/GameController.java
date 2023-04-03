@@ -36,9 +36,9 @@ public class GameController {
     }
 
     @PostMapping(UIConfig.NEW_GAME)
-    public String newGame(Model model, @PathParam("playersCount") int playersCount, Authentication authentication) {
+    public String newGame(Model model, Authentication authentication) {
         try {
-            return "redirect:" + UIConfig.GAMES + "/" + gameService.newGame(authentication.getName(), playersCount) + "/room";
+            return "redirect:" + UIConfig.GAMES + "/" + gameService.newGame(authentication.getName(), 3) + "/room";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return gameHome(model);
