@@ -31,7 +31,9 @@ public class Player {
         this.bomb=false;
     }
 
-    public void addPoints(int points) {
+    public void addPoints(int points, boolean addAfter800){
+        if(!addAfter800 && this.points>=800)
+            return;
         this.points += points;
     }
 

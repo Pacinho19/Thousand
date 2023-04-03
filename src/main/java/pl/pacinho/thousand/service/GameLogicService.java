@@ -174,9 +174,9 @@ public class GameLogicService {
     private void calculatePoints(AuctionSummaryDto auctionSummary, Player p, int roundPoints) {
         int points = GameUtils.calculatePlayerRoundPoints(p.getRoundSummaryDto());
         if (auctionSummary.playerName().equals(p.getName()))
-            p.addPoints(points >= roundPoints ? roundPoints : roundPoints * -1);
+            p.addPoints(points >= roundPoints ? roundPoints : roundPoints * -1, true);
         else
-            p.addPoints(NumberUtils.roundToNearest10(points));
+            p.addPoints(NumberUtils.roundToNearest10(points), false);
 
         p.getCards().clear();
         p.setRoundSummaryDto(new RoundSummaryDto());
@@ -194,9 +194,9 @@ public class GameLogicService {
         game.getPlayers()
                 .forEach(p -> {
                     if (p.getName().equals(player.getName()))
-                        p.addPoints(-1 * getPointsToSubtractAfterBomb(game));
+                        p.addPoints(-1 * getPointsToSubtractAfterBomb(game), true);
                     else
-                        p.addPoints(60);
+                        p.addPoints(60, false);
                 });
         nextRound(game);
     }

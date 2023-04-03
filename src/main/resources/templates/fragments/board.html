@@ -9,11 +9,11 @@
                 <tbody>
                 <tr  th:each="playerInfo : ${game.playersInfo}">
                     <td style="vertical-align: middle;">
-                        <span th:text="${playerInfo.value.name}"></span>
+                        <span th:style="${playerInfo.value.points>=800 ? 'color:red;  text-decoration: underline' : ''}" th:text="${playerInfo.value.name}"></span>
                         <i th:if="${playerInfo.value.bombUsed}" class="fa-solid fa-bomb" style="color:red;"></i>
                     </td>
                     <td style="vertical-align: middle;">
-                        <span th:text="${playerInfo.value.points}"> </span>
+                        <span th:text="${playerInfo.value.points}" th:style="${playerInfo.value.points>=800 ? 'color:red;  text-decoration: underline' : ''}"></span>
 
                     </td>
                 </tr>
@@ -144,6 +144,11 @@
                                                style="display: inline block">
                                         <button type="submit" class="btn btn-primary">Send</button>
                                     </form>
+                                </div>
+                                <div th:if="${game.stage.name=='CONFIRMATION_POINTS' && game.actualPlayer!=game.playerIndex}"
+                                     style="height:90%;margin:auto;justify-content: center;align-items: center">
+
+                                    <h2>Waiting for starting game..</h2>
                                 </div>
                             </div>
                             <div class="row"
