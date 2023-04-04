@@ -10,6 +10,7 @@ import pl.pacinho.thousand.model.entity.Player;
 import pl.pacinho.thousand.model.enums.CardRank;
 import pl.pacinho.thousand.model.enums.CardSuit;
 import pl.pacinho.thousand.model.enums.GameStage;
+import pl.pacinho.thousand.model.enums.GameStatus;
 import pl.pacinho.thousand.repository.GameRepository;
 import pl.pacinho.thousand.utils.AuctionUtils;
 import pl.pacinho.thousand.utils.GameUtils;
@@ -122,7 +123,7 @@ public class GameLogicService {
 
     private boolean battleCardsFilter(Map.Entry<Player, CardDto> c, CardSuit roundSuit, boolean superCardSuit, CardSuit cardSuit) {
         return (!superCardSuit && c.getValue().getSuit() == roundSuit)
-                || (superCardSuit && c.getValue().getSuit() == cardSuit);
+               || (superCardSuit && c.getValue().getSuit() == cardSuit);
     }
 
     private boolean checkStackContainsSuperCard(CardSuit superCardSuit, Map<Player, CardDto> stack) {
@@ -148,7 +149,7 @@ public class GameLogicService {
     private boolean checkCardPair(CardDto card, List<CardDto> cards) {
         return cards.stream()
                 .anyMatch(c -> c.getSuit() == card.getSuit()
-                        && c.getRank() == card.getRank().getPair());
+                               && c.getRank() == card.getRank().getPair());
     }
 
     public boolean checkEndOfRound(Game game) {
@@ -162,8 +163,7 @@ public class GameLogicService {
                     roundResult.addPlayerResult(new PlayerRoundResultDto(p.getName(), points, false));
                 });
 
-        game.setStage(GameStage.ROUND_OVER);
-        game.setRoundResult(roundResult);
+        finishRound(game, roundResult);
         return true;
     }
 
@@ -217,8 +217,7 @@ public class GameLogicService {
                     });
         }
 
-        game.setStage(GameStage.ROUND_OVER);
-        game.setRoundResult(roundResult);
+        finishRound(game, roundResult);
     }
 
     private void addingPlayerEmptyResults(Game game, RoundResultDto roundResult, Player bombPlayer) {
@@ -242,11 +241,19 @@ public class GameLogicService {
                 .filter(pr -> pr.getName().equals(name))
                 .forEach(pr -> pr.setReady(true));
 
-        if (GameUtils.checkAllPlayersReady(game)) {
-            nextRound(game);
-            return true;
-        }
-        return false;
+        if (!GameUtils.checkAllPlayersReady(game))
+            return false;
+
+        nextRound(game);
+        return true;
+    }
+
+    private void finishRound(Game game, RoundResultDto roundResult) {
+        game.setStage(GameStage.ROUND_OVER);
+        game.setRoundResult(roundResult);
+
+        if (GameUtils.checkEndGame(game))
+            game.setStatus(GameStatus.FINISHED);
     }
 
 }

@@ -44,7 +44,8 @@ public class Game {
     private CardSuit roundSuit;
     @Setter
     private RoundResultDto roundResult;
-
+    @Setter
+    private Player winner;
     public Game(String player1, int playersCount) {
         this.playersCount = playersCount;
         players = new LinkedList<>();

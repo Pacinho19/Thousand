@@ -14,6 +14,7 @@ import pl.pacinho.thousand.repository.GameRepository;
 import pl.pacinho.thousand.utils.AuctionUtils;
 import pl.pacinho.thousand.utils.GameUtils;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -185,5 +186,18 @@ public class GameService {
                 .stream()
                 .filter(pr -> pr.getName().equals(name))
                 .allMatch(PlayerRoundResultDto::isReady);
+    }
+
+    public GameStatus getStatus(String gameId) {
+        return gameLogicService.findById(gameId)
+                .getStatus();
+    }
+
+    public GameSummaryDto getGameSummary(String gameId) {
+        Game game = gameLogicService.findById(gameId);
+        return new GameSummaryDto(
+                game.getWinner().getName(),
+                GameUtils.getPlayersInfo(game)
+        );
     }
 }

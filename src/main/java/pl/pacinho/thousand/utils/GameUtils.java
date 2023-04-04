@@ -1,14 +1,14 @@
 package pl.pacinho.thousand.utils;
 
-import pl.pacinho.thousand.model.dto.CardDto;
-import pl.pacinho.thousand.model.dto.GameDto;
-import pl.pacinho.thousand.model.dto.PlayerRoundResultDto;
-import pl.pacinho.thousand.model.dto.RoundSummaryDto;
+import pl.pacinho.thousand.model.dto.*;
 import pl.pacinho.thousand.model.entity.Game;
 import pl.pacinho.thousand.model.entity.Player;
 import pl.pacinho.thousand.model.enums.CardSuit;
+import pl.pacinho.thousand.model.enums.GameStatus;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class GameUtils {
 
@@ -29,10 +29,10 @@ public class GameUtils {
 
     public static boolean allPlayersHasTheSameCardsCount(Game game) {
         return game.getPlayers()
-                .stream()
-                .map(p -> p.getCards().size())
-                .distinct()
-                .count() == 1;
+                       .stream()
+                       .map(p -> p.getCards().size())
+                       .distinct()
+                       .count() == 1;
     }
 
     public static boolean checkPlayer(Game game, String name) {
@@ -77,8 +77,8 @@ public class GameUtils {
         boolean nonExistsAnyCardWithSuperSuit = !existsAnyCardWithRoundSuit(gameDto.getCards(), gameDto.getSuperCardSuit());
 
         return hasRoundSuit
-                || (nonExistsAnyCardWithRoundSuit && cardDto.getSuit() == gameDto.getSuperCardSuit())
-                || (nonExistsAnyCardWithRoundSuit && nonExistsAnyCardWithSuperSuit);
+               || (nonExistsAnyCardWithRoundSuit && cardDto.getSuit() == gameDto.getSuperCardSuit())
+               || (nonExistsAnyCardWithRoundSuit && nonExistsAnyCardWithSuperSuit);
     }
 
     private static boolean existsAnyCardWithRoundSuit(List<CardDto> cards, CardSuit suit) {
@@ -102,5 +102,27 @@ public class GameUtils {
         return game.getRoundResult().getPlayersResult()
                 .stream()
                 .allMatch(PlayerRoundResultDto::isReady);
+    }
+
+    public static boolean checkEndGame(Game game) {
+        Optional<Player> winPlayerOpt = game.getPlayers()
+                .stream()
+                .filter(p -> p.getPoints() >= 1000)
+                .max(Comparator.comparing(Player::getPoints));
+
+        if (winPlayerOpt.isEmpty())
+            return false;
+
+        game.setStatus(GameStatus.FINISHED);
+        game.setWinner(winPlayerOpt.get());
+        return true;
+    }
+
+    public static List<PlayerSummaryDto> getPlayersInfo(Game game) {
+        return game.getPlayers()
+                .stream()
+                .map(p -> new PlayerSummaryDto(p.getName(), p.getPoints()))
+                .sorted(Comparator.comparing(PlayerSummaryDto::points).reversed())
+                .toList();
     }
 }

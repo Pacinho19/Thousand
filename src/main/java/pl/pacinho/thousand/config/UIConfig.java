@@ -15,7 +15,7 @@ public class UIConfig {
     public static final String GAME_ROUND_SUMMARY_RELOAD = GAME_ROUND_SUMMARY + "/reload";
     public static final String GAME_ROUND_READY = GAME_ROUND + "/ready";
     public static final String GAME_BOMB = GAME_PAGE + "/bomb";
-    public static final String GAME_OVER = GAME_PAGE + "/over";
+    public static final String GAME_SUMMARY = GAME_PAGE + "/summary";
     public static final String GAME_AUCTION = GAME_PAGE + "/auction";
     public static final String GAME_AUCTION_OFFER = GAME_AUCTION + "/offer";
     public static final String GAME_AUCTION_PASS = GAME_AUCTION + "/pass";

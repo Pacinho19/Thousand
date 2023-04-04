@@ -52,7 +52,7 @@ public class GameController {
             if (game.getStatus() == GameStatus.IN_PROGRESS)
                 return "redirect:" + UIConfig.GAMES + "/" + gameId;
             if (game.getStatus() == GameStatus.FINISHED)
-                throw new IllegalStateException("Game " + gameId + " finished!");
+                return "redirect:" + UIConfig.GAMES + "/" + gameId + "/summary";
 
             model.addAttribute("game", game);
             model.addAttribute("joinGame", gameService.canJoin(game, authentication.getName()));
@@ -82,7 +82,7 @@ public class GameController {
 
         if (game.getStatus() == GameStatus.FINISHED) {
             redirectAttr.addAttribute("gameId", gameId);
-            return "redirect:" + UIConfig.GAME_OVER;
+            return "redirect:" + UIConfig.GAME_SUMMARY;
         }
 
         model.addAttribute("game", game);
@@ -148,6 +148,11 @@ public class GameController {
     public String roundSummary(Model model,
                                Authentication authentication,
                                @PathVariable(value = "gameId") String gameId) {
+
+        GameStatus status = gameService.getStatus(gameId);
+        if (status == GameStatus.FINISHED)
+            return "redirect:" + UIConfig.GAMES + "/" + gameId + "/summary";
+
         RoundResultDto roundResult = gameService.getRoundResult(gameId);
         if (roundResult == null)
             return "redirect:" + UIConfig.GAMES + "/" + gameId;
@@ -168,6 +173,11 @@ public class GameController {
     public String reloadRoundResult(Model model,
                                     Authentication authentication,
                                     @PathVariable(value = "gameId") String gameId) {
+
+        GameStatus status = gameService.getStatus(gameId);
+        if (status == GameStatus.FINISHED)
+            return "redirect:" + UIConfig.GAMES + "/" + gameId + "/summary";
+
         RoundResultDto roundResult = gameService.getRoundResult(gameId);
         if (roundResult == null)
             return "redirect:" + UIConfig.GAMES + "/" + gameId;
@@ -178,5 +188,16 @@ public class GameController {
         return "fragments/round-result-table :: roundResultTable";
     }
 
+    @GetMapping(UIConfig.GAME_SUMMARY)
+    public String reloadRoundResult(Model model,
+                                    @PathVariable(value = "gameId") String gameId) {
+
+        GameStatus status = gameService.getStatus(gameId);
+        if (status != GameStatus.FINISHED)
+            return "redirect:" + UIConfig.GAMES + "/" + gameId;
+
+        model.addAttribute("gameSummary", gameService.getGameSummary(gameId));
+        return "game-summary";
+    }
 
 }
