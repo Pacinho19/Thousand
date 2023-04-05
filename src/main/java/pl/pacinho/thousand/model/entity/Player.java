@@ -25,7 +25,7 @@ public class Player {
     public Player(String name, int index) {
         this.name = name;
         this.index = index;
-        this.points = 900;
+        this.points = 0;
         this.cards = Collections.emptyList();
         this.roundSummaryDto = new RoundSummaryDto();
         this.bomb=false;
